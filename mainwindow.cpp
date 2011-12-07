@@ -61,8 +61,12 @@ void MainWindow::showExpanded()
 void MainWindow::openTFL()
 {
     QString *url = new QString("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1");
-    url->append("&name_origin=euston&type_origin=stop");
-    url->append("&name_destination=angel&type_destination=stop");
+    url->append("&name_origin=");
+    url->append(ui->lineFrom->text());
+    url->append("&type_origin=stop");
+    url->append("&name_destination=");
+    url->append(ui->lineTo->text());
+    url->append("&type_destination=stop");
     QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
 }
 
