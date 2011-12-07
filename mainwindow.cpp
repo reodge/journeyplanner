@@ -60,7 +60,10 @@ void MainWindow::showExpanded()
 
 void MainWindow::openTFL()
 {
-    QDesktopServices::openUrl(QUrl("http://www.imgtec.com",QUrl::TolerantMode));
+    QString *url = new QString("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1");
+    url->append("&name_origin=euston&type_origin=stop");
+    url->append("&name_destination=angel&type_destination=stop");
+    QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
 }
 
 void MainWindow::setupGeneral()
