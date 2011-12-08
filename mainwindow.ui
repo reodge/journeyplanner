@@ -28,6 +28,9 @@
         <property name="text">
          <string/>
         </property>
+        <property name="placeholderText">
+         <string>From</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -38,7 +41,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineTo"/>
+       <widget class="QLineEdit" name="lineTo">
+        <property name="placeholderText">
+         <string>To</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QComboBox" name="comboTo">

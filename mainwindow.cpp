@@ -77,6 +77,7 @@ void MainWindow::setupCombo(QComboBox *c)
     c->addItem("Address");
     c->addItem("Place of Interest");
 }
+
 void MainWindow::setupGeneral()
 {
     setupCombo(ui->comboFrom);
