@@ -4,6 +4,8 @@
 #include <QtCore/QCoreApplication>
 #include <QDesktopServices>
 #include <QDateTime>
+#include <QDate>
+#include <QTime>
 #include <QUrl>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -59,6 +61,7 @@ void MainWindow::showExpanded()
 #endif
 }
 
+/* Sets up the URL to fetch from tfl and opens it in the default browser */
 void MainWindow::openTFL()
 {
     QString *url = new QString("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
@@ -70,6 +73,16 @@ void MainWindow::openTFL()
     url->append(ui->lineTo->text());
     url->append("&type_destination=");
     url->append(comboIndexToUrl(ui->comboTo));
+    url->append("&itdTripDateTimeDepArr=");
+    url->append(sliderValueToUrl(ui->sldDepArr));
+    url->append("&itdDateDay=");
+    url->append(dateTimeToDayUrl(ui->dateTime));
+    url->append("&itdDateYearMonth=");
+    url->append(dateTimeToYearMonthUrl(ui->dateTime));
+    url->append("&itdTimeHour=");
+    url->append(dateTimeToTimeHourUrl(ui->dateTime));
+    url->append("&itdTimeMinute=");
+    url->append(dateTimeToTimeMinuteUrl(ui->dateTime));
     QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
 }
 
@@ -105,6 +118,40 @@ QString MainWindow::comboIndexToUrl(QComboBox *c)
     default:
         return QString("");
     }
+}
+
+/* Turns current value of slider into string to put into URL */
+QString MainWindow::sliderValueToUrl(QSlider *s)
+{
+    switch(s->value())
+    {
+    case 0:
+        return QString("dep");
+    case 1:
+        return QString("arr");
+    default:
+        return QString("");
+    }
+}
+
+QString MainWindow::dateTimeToDayUrl(QDateTimeEdit *d)
+{
+    return d->dateTime().toString("d");
+}
+
+QString MainWindow::dateTimeToYearMonthUrl(QDateTimeEdit *d)
+{
+    return d->dateTime().toString("yyyyMM");
+}
+
+QString MainWindow::dateTimeToTimeHourUrl(QDateTimeEdit *d)
+{
+    return d->dateTime().toString("h");
+}
+
+QString MainWindow::dateTimeToTimeMinuteUrl(QDateTimeEdit *d)
+{
+    return d->dateTime().toString("m");
 }
 
 void MainWindow::setupGeneral()
