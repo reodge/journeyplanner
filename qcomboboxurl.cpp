@@ -1,4 +1,5 @@
 #include "qcomboboxurl.h"
+#include <QRegExp>
 
 QComboBoxUrl::QComboBoxUrl(QWidget *parent) :
     QComboBox(parent),
@@ -8,9 +9,11 @@ QComboBoxUrl::QComboBoxUrl(QWidget *parent) :
 
 void QComboBoxUrl::checkForPostcode(const QString& str)
 {
-    if(str.compare("hi", Qt::CaseInsensitive) == 0)
+    if(isPostcode(str))
     {
-        iLastValueBeforeAutoPostcode = this->currentIndex();
+        /* Only set the last index value if we are currently not already on 'Postcode' */
+        if(this->currentIndex() != 1)
+            iLastValueBeforeAutoPostcode = this->currentIndex();
         this->setCurrentIndex(1);
     }
     else
@@ -19,7 +22,17 @@ void QComboBoxUrl::checkForPostcode(const QString& str)
     }
 }
 
-void QComboBoxUrl::actOnActivation(const int index)
+bool QComboBoxUrl::isPostcode(QString str)
+{
+    QString s = str.remove(' ').toUpper();
+
+    /* This is the full regexp, it's not necessary to use the whole thing, we just check the beginning */
+    //QRegExp rx("^[A-Z]{1,2}\\d{1,2}[A-Z]?\\d[A-Z]{2}$");
+    QRegExp rx("^[A-Z]{1,2}\\d{1,2}.*$");
+    return rx.exactMatch(s);
+}
+
+void QComboBoxUrl::updateLastIndex(const int index)
 {
         iLastValueBeforeAutoPostcode = index;
 }

@@ -15,10 +15,12 @@ signals:
 
 public slots:
     void checkForPostcode(const QString& str);
-    void actOnActivation(const int index);
+    void updateLastIndex(const int index);
 
 private:
     int iLastValueBeforeAutoPostcode;
+
+    bool isPostcode(QString str);
 };
 
 #endif // QCOMBOBOXURL_H

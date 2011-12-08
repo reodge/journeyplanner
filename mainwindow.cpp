@@ -7,6 +7,8 @@
 #include "qsliderurl.h"
 #include <QUrl>
 
+#include <cstdio>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -63,18 +65,22 @@ void MainWindow::showExpanded()
 /* Sets up the URL to fetch from tfl and opens it in the default browser */
 void MainWindow::openTFL()
 {
-    QString *url = new QString("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
-    url->append("&name_origin=");
-    url->append(ui->lineFrom->text());
-    url->append("&type_origin=");
-    url->append(ui->comboFrom->toUrlString());
-    url->append("&name_destination=");
-    url->append(ui->lineTo->text());
-    url->append("&type_destination=");
-    url->append(ui->comboTo->toUrlString());
-    url->append(ui->sldDepArr->toUrlString());
-    url->append(ui->dateTime->toUrlString());
-    QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
+    QString url("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
+    url.append("&name_origin=");
+    url.append(ui->lineFrom->text());
+    url.append("&type_origin=");
+    url.append(ui->comboFrom->toUrlString());
+    url.append("&name_destination=");
+    url.append(ui->lineTo->text());
+    url.append("&type_destination=");
+    url.append(ui->comboTo->toUrlString());
+    url.append(ui->sldDepArr->toUrlString());
+    url.append(ui->dateTime->toUrlString());
+
+    /* For testing */
+    printf("Opening URL: %s\n", url.toStdString().c_str());
+    fflush(stdout);
+    //QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
 }
 
 void MainWindow::setupGeneral()
