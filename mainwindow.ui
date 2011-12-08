@@ -34,10 +34,30 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboFrom">
+       <widget class="QComboBoxUrl" name="comboFrom">
         <property name="maxVisibleItems">
          <number>4</number>
         </property>
+        <item>
+         <property name="text">
+          <string>Station or Stop</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Postcode</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Address</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Place of Interest</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
@@ -48,10 +68,30 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboTo">
+       <widget class="QComboBoxUrl" name="comboTo">
         <property name="maxVisibleItems">
          <number>4</number>
         </property>
+        <item>
+         <property name="text">
+          <string>Station or Stop</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Postcode</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Address</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Place of Interest</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
@@ -74,7 +114,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSlider" name="sldDepArr">
+         <widget class="QSliderUrl" name="sldDepArr">
           <property name="maximum">
            <number>1</number>
           </property>
@@ -107,7 +147,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QDateTimeEdit" name="dateTime">
+         <widget class="QDateTimeEditUrl" name="dateTime">
           <property name="wrapping">
            <bool>true</bool>
           </property>
@@ -115,7 +155,7 @@
            <bool>true</bool>
           </property>
           <property name="displayFormat">
-           <string>d MMM yyyy, h:mm</string>
+           <string>d MMM yyyy h:mm</string>
           </property>
          </widget>
         </item>
@@ -167,6 +207,73 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QDateTimeEditUrl</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qdatetimeediturl.h</header>
+   <slots>
+    <slot>initDateTime()</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QSliderUrl</class>
+   <extends>QSlider</extends>
+   <header>qsliderurl.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QComboBoxUrl</class>
+   <extends>QComboBox</extends>
+   <header>qcomboboxurl.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>lineFrom</tabstop>
+  <tabstop>comboFrom</tabstop>
+  <tabstop>lineTo</tabstop>
+  <tabstop>comboTo</tabstop>
+  <tabstop>sldDepArr</tabstop>
+  <tabstop>dateTime</tabstop>
+  <tabstop>btnResetDateTime</tabstop>
+  <tabstop>btnOptions</tabstop>
+  <tabstop>btnGo</tabstop>
+ </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnGo</sender>
+   <signal>released()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>openTFL()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>183</x>
+     <y>178</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>316</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnResetDateTime</sender>
+   <signal>released()</signal>
+   <receiver>dateTime</receiver>
+   <slot>initDateTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>195</x>
+     <y>107</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>openTFL()</slot>
+ </slots>
 </ui>

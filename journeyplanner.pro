@@ -22,8 +22,14 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # CONFIG += mobility
 # MOBILITY +=
 
-SOURCES += main.cpp mainwindow.cpp
-HEADERS += mainwindow.h
+SOURCES += main.cpp mainwindow.cpp \
+    qdatetimeediturl.cpp \
+    qsliderurl.cpp \
+    qcomboboxurl.cpp
+HEADERS += mainwindow.h \
+    qdatetimeediturl.h \
+    qsliderurl.h \
+    qcomboboxurl.h
 FORMS += mainwindow.ui
 
 # Please do not modify the following two lines. Required for deployment.

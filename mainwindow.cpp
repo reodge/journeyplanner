@@ -3,9 +3,8 @@
 
 #include <QtCore/QCoreApplication>
 #include <QDesktopServices>
-#include <QDateTime>
-#include <QDate>
-#include <QTime>
+#include "qdatetimeediturl.h"
+#include "qsliderurl.h"
 #include <QUrl>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -68,98 +67,17 @@ void MainWindow::openTFL()
     url->append("&name_origin=");
     url->append(ui->lineFrom->text());
     url->append("&type_origin=");
-    url->append(comboIndexToUrl(ui->comboFrom));
+    url->append(ui->comboFrom->toUrlString());
     url->append("&name_destination=");
     url->append(ui->lineTo->text());
     url->append("&type_destination=");
-    url->append(comboIndexToUrl(ui->comboTo));
-    url->append("&itdTripDateTimeDepArr=");
-    url->append(sliderValueToUrl(ui->sldDepArr));
-    url->append("&itdDateDay=");
-    url->append(dateTimeToDayUrl(ui->dateTime));
-    url->append("&itdDateYearMonth=");
-    url->append(dateTimeToYearMonthUrl(ui->dateTime));
-    url->append("&itdTimeHour=");
-    url->append(dateTimeToTimeHourUrl(ui->dateTime));
-    url->append("&itdTimeMinute=");
-    url->append(dateTimeToTimeMinuteUrl(ui->dateTime));
+    url->append(ui->comboTo->toUrlString());
+    url->append(ui->sldDepArr->toUrlString());
+    url->append(ui->dateTime->toUrlString());
     QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
-}
-
-/* Does initial setup for date time edit box */
-void MainWindow::initDateTime()
-{
-    ui->dateTime->setDateTime(QDateTime::currentDateTime());
-}
-
-/* Sets up elements in the combo box */
-void MainWindow::setupCombo(QComboBox *c)
-{
-    c->addItem("Station or Stop");
-    c->addItem("Postcode");
-    c->addItem("Address");
-    c->addItem("Place of Interest");
-}
-
-/* Turns current index from combo box into the string to be added to a url,
- * needs to be kept in sync with MainWindow::setupCombo */
-QString MainWindow::comboIndexToUrl(QComboBox *c)
-{
-    switch(c->currentIndex())
-    {
-    case 0:
-        return QString("stop");
-    case 1:
-        return QString("locator");
-    case 2:
-        return QString("address");
-    case 3:
-        return QString("poi");
-    default:
-        return QString("");
-    }
-}
-
-/* Turns current value of slider into string to put into URL */
-QString MainWindow::sliderValueToUrl(QSlider *s)
-{
-    switch(s->value())
-    {
-    case 0:
-        return QString("dep");
-    case 1:
-        return QString("arr");
-    default:
-        return QString("");
-    }
-}
-
-QString MainWindow::dateTimeToDayUrl(QDateTimeEdit *d)
-{
-    return d->dateTime().toString("d");
-}
-
-QString MainWindow::dateTimeToYearMonthUrl(QDateTimeEdit *d)
-{
-    return d->dateTime().toString("yyyyMM");
-}
-
-QString MainWindow::dateTimeToTimeHourUrl(QDateTimeEdit *d)
-{
-    return d->dateTime().toString("h");
-}
-
-QString MainWindow::dateTimeToTimeMinuteUrl(QDateTimeEdit *d)
-{
-    return d->dateTime().toString("m");
 }
 
 void MainWindow::setupGeneral()
 {
-    setupCombo(ui->comboFrom);
-    setupCombo(ui->comboTo);
-    initDateTime();
-
-    connect(ui->btnGo, SIGNAL(released()), this, SLOT(openTFL()));
-    connect(ui->btnResetDateTime, SIGNAL(released()), this, SLOT(initDateTime()));
+    ui->dateTime->initDateTime();
 }

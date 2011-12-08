@@ -30,19 +30,12 @@ public:
 
 public slots:
     void openTFL();
-    void initDateTime();
 
 private:
     Ui::MainWindow *ui;
 
-    void setupCombo(QComboBox *c);
-
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);
-    QString dateTimeToDayUrl(QDateTimeEdit *d);
-    QString dateTimeToYearMonthUrl(QDateTimeEdit *d);
-    QString dateTimeToTimeHourUrl(QDateTimeEdit *d);
-    QString dateTimeToTimeMinuteUrl(QDateTimeEdit *d);
 
     void setupGeneral();
 };
