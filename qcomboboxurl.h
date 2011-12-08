@@ -14,7 +14,11 @@ public:
 signals:
 
 public slots:
+    void checkForPostcode(const QString& str);
+    void actOnActivation(const int index);
 
+private:
+    int iLastValueBeforeAutoPostcode;
 };
 
 #endif // QCOMBOBOXURL_H

@@ -225,6 +225,10 @@
    <class>QComboBoxUrl</class>
    <extends>QComboBox</extends>
    <header>qcomboboxurl.h</header>
+   <slots>
+    <slot>checkForPostcode(QString)</slot>
+    <slot>actOnActivation(int)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -272,8 +276,73 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lineFrom</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>comboFrom</receiver>
+   <slot>checkForPostcode(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>56</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>59</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineTo</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>comboTo</receiver>
+   <slot>checkForPostcode(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>40</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboFrom</sender>
+   <signal>activated(int)</signal>
+   <receiver>comboFrom</receiver>
+   <slot>actOnActivation(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>95</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboTo</sender>
+   <signal>activated(int)</signal>
+   <receiver>comboTo</receiver>
+   <slot>actOnActivation(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openTFL()</slot>
+  <slot>testSlot()</slot>
  </slots>
 </ui>
