@@ -63,19 +63,41 @@ void MainWindow::openTFL()
     QString *url = new QString("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1");
     url->append("&name_origin=");
     url->append(ui->lineFrom->text());
-    url->append("&type_origin=stop");
+    url->append("&type_origin=");
+    url->append(comboIndexToUrl(ui->comboFrom));
     url->append("&name_destination=");
     url->append(ui->lineTo->text());
-    url->append("&type_destination=stop");
+    url->append("&type_destination=");
+    url->append(comboIndexToUrl(ui->comboTo));
     QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
 }
 
+/* Sets up elements in the combo box */
 void MainWindow::setupCombo(QComboBox *c)
 {
     c->addItem("Station or Stop");
     c->addItem("Postcode");
     c->addItem("Address");
     c->addItem("Place of Interest");
+}
+
+/* Turns current index from combo box into the string to be added to a url,
+ * needs to be kept in sync with MainWindow::setupCombo */
+QString MainWindow::comboIndexToUrl(QComboBox *c)
+{
+    switch(c->currentIndex())
+    {
+    case 0:
+        return QString("stop");
+    case 1:
+        return QString("locator");
+    case 2:
+        return QString("address");
+    case 3:
+        return QString("poi");
+    default:
+        return QString("");
+    }
 }
 
 void MainWindow::setupGeneral()

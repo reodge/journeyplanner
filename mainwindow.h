@@ -34,6 +34,8 @@ private:
 
     void setupCombo(QComboBox *c);
 
+    QString comboIndexToUrl(QComboBox *c);
+
     void setupGeneral();
 };
 
