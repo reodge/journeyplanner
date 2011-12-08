@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
+#include <QtGui/QComboBox>
 
 namespace Ui {
     class MainWindow;
@@ -30,6 +31,8 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+
+    void setupCombo(QComboBox *c);
 
     void setupGeneral();
 };

@@ -70,17 +70,17 @@ void MainWindow::openTFL()
     QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
 }
 
+void MainWindow::setupCombo(QComboBox *c)
+{
+    c->addItem("Station or Stop");
+    c->addItem("Postcode");
+    c->addItem("Address");
+    c->addItem("Place of Interest");
+}
 void MainWindow::setupGeneral()
 {
-    ui->comboFrom->addItem("Station or Stop");
-    ui->comboFrom->addItem("Postcode");
-    ui->comboFrom->addItem("Address");
-    ui->comboFrom->addItem("Place of Interest");
-
-    ui->comboTo->addItem("Station or Stop");
-    ui->comboTo->addItem("Postcode");
-    ui->comboTo->addItem("Address");
-    ui->comboTo->addItem("Place of Interest");
+    setupCombo(ui->comboFrom);
+    setupCombo(ui->comboTo);
 
     connect(ui->btnGo, SIGNAL(released()), this, SLOT(openTFL()));
 }
