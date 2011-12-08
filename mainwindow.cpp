@@ -60,7 +60,7 @@ void MainWindow::showExpanded()
 
 void MainWindow::openTFL()
 {
-    QString *url = new QString("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1");
+    QString *url = new QString("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
     url->append("&name_origin=");
     url->append(ui->lineFrom->text());
     url->append("&type_origin=");
