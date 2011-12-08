@@ -3,6 +3,7 @@
 
 #include <QtGui/QMainWindow>
 #include <QtGui/QComboBox>
+#include <QtGui/QDateTimeEdit>
 
 namespace Ui {
     class MainWindow;
@@ -28,6 +29,7 @@ public:
 
 public slots:
     void openTFL();
+    void initDateTime();
 
 private:
     Ui::MainWindow *ui;

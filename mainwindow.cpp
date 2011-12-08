@@ -73,6 +73,12 @@ void MainWindow::openTFL()
     QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
 }
 
+/* Does initial setup for date time edit box */
+void MainWindow::initDateTime()
+{
+    ui->dateTime->setDateTime(QDateTime::currentDateTime());
+}
+
 /* Sets up elements in the combo box */
 void MainWindow::setupCombo(QComboBox *c)
 {
@@ -105,8 +111,8 @@ void MainWindow::setupGeneral()
 {
     setupCombo(ui->comboFrom);
     setupCombo(ui->comboTo);
-
-    ui->dateTime->setDateTime(QDateTime::currentDateTime());
+    initDateTime();
 
     connect(ui->btnGo, SIGNAL(released()), this, SLOT(openTFL()));
+    connect(ui->btnResetDateTime, SIGNAL(released()), this, SLOT(initDateTime()));
 }
