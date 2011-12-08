@@ -5,6 +5,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QSlider>
 #include <QtGui/QDateTimeEdit>
+#include "position.h"
 
 namespace Ui {
     class MainWindow;
@@ -33,6 +34,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+    Position *pos;
 
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);

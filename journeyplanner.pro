@@ -19,17 +19,19 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # If your application uses the Qt Mobility libraries, uncomment
 # the following lines and add the respective components to the 
 # MOBILITY variable. 
-# CONFIG += mobility
-# MOBILITY +=
+CONFIG += mobility
+MOBILITY += location
 
 SOURCES += main.cpp mainwindow.cpp \
     qdatetimeediturl.cpp \
     qsliderurl.cpp \
-    qcomboboxurl.cpp
+    qcomboboxurl.cpp \
+    position.cpp
 HEADERS += mainwindow.h \
     qdatetimeediturl.h \
     qsliderurl.h \
-    qcomboboxurl.h
+    qcomboboxurl.h \
+    position.h
 FORMS += mainwindow.ui
 
 # Please do not modify the following two lines. Required for deployment.

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "position.h"
 
 #include <QtCore/QCoreApplication>
 #include <QDesktopServices>
@@ -9,8 +10,10 @@
 
 #include <cstdio>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    pos(new Position)
 {
     ui->setupUi(this);
     setupGeneral();
@@ -19,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete pos;
 }
 
 void MainWindow::setOrientation(ScreenOrientation orientation)
