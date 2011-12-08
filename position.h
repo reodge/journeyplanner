@@ -3,6 +3,7 @@
 
 #include <QtLocation/QGeoPositionInfoSource>
 #include <QtLocation/QGeoPositionInfo>
+#include <QtLocation/QGeoCoordinate>
 
 QTM_USE_NAMESPACE
 
@@ -13,11 +14,19 @@ public:
     explicit Position(QObject *parent = 0);
     ~Position();
 
+    void updatePosition();
+
+    QGeoCoordinate getPosition();
+
+signals:
+    void positionObtained();
+
 private slots:
     void positionUpdated(const QGeoPositionInfo& info);
 
 private:
     QGeoPositionInfoSource *source;
+    QGeoPositionInfo info;
 };
 
 #endif // POSITION_H
