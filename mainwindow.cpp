@@ -3,6 +3,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QDesktopServices>
+#include <QDateTime>
 #include <QUrl>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -104,6 +105,8 @@ void MainWindow::setupGeneral()
 {
     setupCombo(ui->comboFrom);
     setupCombo(ui->comboTo);
+
+    ui->dateTime->setDateTime(QDateTime::currentDateTime());
 
     connect(ui->btnGo, SIGNAL(released()), this, SLOT(openTFL()));
 }
