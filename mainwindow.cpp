@@ -12,7 +12,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    pos(new Position)
+    pos(new Position),
+    hereRefCount(0)
 {
     ui->setupUi(this);
     setupGeneral();
@@ -89,6 +90,18 @@ void MainWindow::findRoute()
     openTFL();
 }
 
+/* Called when an element from combo box "To" is selected */
+void MainWindow::indexActivatedTo(const int index)
+{
+    this->setLineEnabled(this->ui->lineTo, index);
+}
+
+/* Called when an element from combo box "From" is selected */
+void MainWindow::indexActivatedFrom(const int index)
+{
+    this->setLineEnabled(this->ui->lineFrom, index);
+}
+
 /* Returns the main part of the TFL URL */
 QString MainWindow::getBaseTFLURL()
 {
@@ -132,8 +145,23 @@ void MainWindow::showError()
     qDebug() << "ERROR: Both boxes are empty!" << endl;
 }
 
+/* Helper function to set enabled state of LineEdit From and To widgets based on index from combo boxes */
+void MainWindow::setLineEnabled(QLineEdit *l, const int index)
+{
+    if (index == 4)
+    {
+        l->setEnabled(false);
+        pos->updatePosition();
+    }
+    else
+    {
+        l->setEnabled(true);
+        l->setFocus();
+        pos->stopUpdates();
+    }
+}
+
 void MainWindow::setupGeneral()
 {
     ui->dateTime->initDateTime();
-    pos->updatePosition();
 }

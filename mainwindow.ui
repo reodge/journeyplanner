@@ -282,8 +282,8 @@
    <slot>findRoute()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>183</x>
-     <y>178</y>
+     <x>253</x>
+     <y>173</y>
     </hint>
     <hint type="destinationlabel">
      <x>316</x>
@@ -298,12 +298,12 @@
    <slot>initDateTime()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>405</x>
-     <y>113</y>
+     <x>354</x>
+     <y>98</y>
     </hint>
     <hint type="destinationlabel">
-     <x>195</x>
-     <y>107</y>
+     <x>199</x>
+     <y>98</y>
     </hint>
    </hints>
   </connection>
@@ -314,12 +314,12 @@
    <slot>checkForPostcode(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>59</x>
+     <x>10</x>
      <y>56</y>
     </hint>
     <hint type="destinationlabel">
-     <x>59</x>
-     <y>92</y>
+     <x>10</x>
+     <y>108</y>
     </hint>
    </hints>
   </connection>
@@ -366,13 +366,47 @@
      <y>166</y>
     </hint>
     <hint type="destinationlabel">
-     <x>92</x>
-     <y>170</y>
+     <x>128</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboFrom</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>indexActivatedFrom(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>79</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>207</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboTo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>indexActivatedTo(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>79</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>208</x>
+     <y>99</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <slot>findRoute()</slot>
+  <slot>indexActivatedTo(int)</slot>
+  <slot>indexActivatedFrom(int)</slot>
  </slots>
 </ui>

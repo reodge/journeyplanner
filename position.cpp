@@ -38,6 +38,12 @@ void Position::updatePosition()
         source->startUpdates();
 }
 
+void Position::stopUpdates()
+{
+    if(source)
+        source->stopUpdates();
+}
+
 void Position::waitForPosition()
 {
 }

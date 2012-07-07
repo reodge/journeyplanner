@@ -31,10 +31,13 @@ public:
 
 public slots:
     void findRoute();
+    void indexActivatedTo(const int index);
+    void indexActivatedFrom(const int index);
 
 private:
     Ui::MainWindow *ui;
     Position *pos;
+    int hereRefCount;
 
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);
@@ -42,6 +45,7 @@ private:
     void openTFL();
     void showWaitDialog();
     void showError();
+    void setLineEnabled(QLineEdit *l, const int index);
 
     void setupGeneral();
 };

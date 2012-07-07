@@ -15,7 +15,7 @@ public:
     ~Position();
 
     void updatePosition();
-
+    void stopUpdates();
     void waitForPosition();
 
 signals:
