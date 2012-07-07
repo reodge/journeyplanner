@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
+    <width>417</width>
     <height>200</height>
    </rect>
   </property>
@@ -61,6 +61,11 @@
           <string>Place of Interest</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Here</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
@@ -96,6 +101,11 @@
         <item>
          <property name="text">
           <string>Place of Interest</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Here</string>
          </property>
         </item>
        </widget>
@@ -206,8 +216,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>320</width>
-     <height>26</height>
+     <width>417</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAbout">
@@ -220,7 +230,7 @@
   </widget>
   <action name="actionAbout">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>About</string>
@@ -248,7 +258,7 @@
    <header>qcomboboxurl.h</header>
    <slots>
     <slot>checkForPostcode(QString)</slot>
-    <slot>updateLastIndex(int)</slot>
+    <slot>indexActivated(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -269,7 +279,7 @@
    <sender>btnGo</sender>
    <signal>released()</signal>
    <receiver>MainWindow</receiver>
-   <slot>openTFL()</slot>
+   <slot>findRoute()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>183</x>
@@ -288,8 +298,8 @@
    <slot>initDateTime()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>255</x>
-     <y>107</y>
+     <x>405</x>
+     <y>113</y>
     </hint>
     <hint type="destinationlabel">
      <x>195</x>
@@ -333,7 +343,7 @@
    <sender>comboFrom</sender>
    <signal>activated(int)</signal>
    <receiver>comboFrom</receiver>
-   <slot>updateLastIndex(int)</slot>
+   <slot>indexActivated(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>83</x>
@@ -349,7 +359,7 @@
    <sender>comboTo</sender>
    <signal>activated(int)</signal>
    <receiver>comboTo</receiver>
-   <slot>updateLastIndex(int)</slot>
+   <slot>indexActivated(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>88</x>
@@ -363,7 +373,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>openTFL()</slot>
-  <slot>testSlot()</slot>
+  <slot>findRoute()</slot>
  </slots>
 </ui>

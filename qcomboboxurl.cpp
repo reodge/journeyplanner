@@ -1,5 +1,6 @@
 #include "qcomboboxurl.h"
 #include <QRegExp>
+#include <QDebug>
 
 QComboBoxUrl::QComboBoxUrl(QWidget *parent) :
     QComboBox(parent),
@@ -32,9 +33,13 @@ bool QComboBoxUrl::isPostcode(QString str)
     return rx.exactMatch(s);
 }
 
-void QComboBoxUrl::updateLastIndex(const int index)
+void QComboBoxUrl::indexActivated(const int index)
 {
         iLastValueBeforeAutoPostcode = index;
+        if (index == 4)
+        {
+            qDebug() << "Selected Here!" << endl;
+        }
 }
 
 /* Turns current index from this combo box into a string to be added to a url. */

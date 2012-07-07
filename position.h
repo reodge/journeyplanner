@@ -16,7 +16,7 @@ public:
 
     void updatePosition();
 
-    QGeoCoordinate getPosition();
+    void waitForPosition();
 
 signals:
     void positionObtained();
@@ -26,7 +26,7 @@ private slots:
 
 private:
     QGeoPositionInfoSource *source;
-    QGeoPositionInfo info;
+    const QGeoPositionInfo *info;
 };
 
 #endif // POSITION_H

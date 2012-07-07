@@ -30,7 +30,7 @@ public:
     void showExpanded();
 
 public slots:
-    void openTFL();
+    void findRoute();
 
 private:
     Ui::MainWindow *ui;
@@ -38,6 +38,10 @@ private:
 
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);
+    QString getBaseTFLURL();
+    void openTFL();
+    void showWaitDialog();
+    void showError();
 
     void setupGeneral();
 };

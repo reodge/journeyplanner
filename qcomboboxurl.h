@@ -15,7 +15,7 @@ signals:
 
 public slots:
     void checkForPostcode(const QString& str);
-    void updateLastIndex(const int index);
+    void indexActivated(const int index);
 
 private:
     int iLastValueBeforeAutoPostcode;

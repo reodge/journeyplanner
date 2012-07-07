@@ -1,14 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "position.h"
 
 #include <QtCore/QCoreApplication>
 #include <QDesktopServices>
+#include <QDebug>
+#include <QUrl>
 #include "qdatetimeediturl.h"
 #include "qsliderurl.h"
-#include <QUrl>
-
-#include <cstdio>
+#include "position.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -66,28 +65,75 @@ void MainWindow::showExpanded()
 #endif
 }
 
-/* Sets up the URL to fetch from tfl and opens it in the default browser */
-void MainWindow::openTFL()
+/* Checks for data needed and passes off to appropriate function to eventually
+   open the TFL website with the inputted data. This indirection currently
+   checks for empty from or to boxes and uses the current position if so. */
+void MainWindow::findRoute()
+{
+    if (ui->lineFrom->text().isEmpty())
+    {
+        if (ui->lineTo->text().isEmpty())
+        {
+            /* Both boxes are empty, show an error */
+            showError();
+            return;
+        }
+
+        /* Here only the origin box is empty */
+    }
+    else if (ui->lineTo->text().isEmpty())
+    {
+        /* Here only the destination box is empty */
+    }
+
+    openTFL();
+}
+
+/* Returns the main part of the TFL URL */
+QString MainWindow::getBaseTFLURL()
 {
     QString url("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
-    url.append("&name_origin=");
-    url.append(ui->lineFrom->text());
+
     url.append("&type_origin=");
     url.append(ui->comboFrom->toUrlString());
-    url.append("&name_destination=");
-    url.append(ui->lineTo->text());
     url.append("&type_destination=");
     url.append(ui->comboTo->toUrlString());
     url.append(ui->sldDepArr->toUrlString());
     url.append(ui->dateTime->toUrlString());
 
+    return url;
+}
+
+/* Puts together the data and opens TFL website */
+void MainWindow::openTFL()
+{
+    QString url = getBaseTFLURL();
+    url.append("&name_origin=");
+    url.append(ui->lineFrom->text());
+    url.append("&name_destination=");
+    url.append(ui->lineTo->text());
+
     /* For testing */
-    printf("Opening URL: %s\n", url.toStdString().c_str());
-    fflush(stdout);
-    //QDesktopServices::openUrl(QUrl(*url,QUrl::TolerantMode));
+    qDebug() << "Opening URL: " << url << endl;
+    /* End testing section */
+
+    QDesktopServices::openUrl(QUrl(url,QUrl::TolerantMode));
+}
+
+/* Shows a waiting dialog, used while waiting for something long running */
+void MainWindow::showWaitDialog()
+{
+    qDebug() << "Now showing waiting dialog" << endl;
+}
+
+/* Shows an error dialog box. Currently only used if both boxes are empty upon clicking Go */
+void MainWindow::showError()
+{
+    qDebug() << "ERROR: Both boxes are empty!" << endl;
 }
 
 void MainWindow::setupGeneral()
 {
     ui->dateTime->initDateTime();
+    pos->updatePosition();
 }
