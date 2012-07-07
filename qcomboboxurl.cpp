@@ -27,9 +27,12 @@ bool QComboBoxUrl::isPostcode(QString str)
 {
     QString s = str.remove(' ').toUpper();
 
-    /* This is the full regexp, it's not necessary to use the whole thing, we just check the beginning */
-    //QRegExp rx("^[A-Z]{1,2}\\d{1,2}[A-Z]?\\d[A-Z]{2}$");
-    QRegExp rx("^[A-Z]{1,2}\\d{1,2}.*$");
+    /* Full regex for postcode.
+    QRegExp rx("^[A-Z]{1,2}\\d{1,2}[A-Z]?\\d[A-Z]{2}$");
+
+    /* This is the regex for just the first half, in case we want to use it instead.
+    //QRegExp rx("^[A-Z]{1,2}\\d{1,2}.*$");
+
     return rx.exactMatch(s);
 }
 
