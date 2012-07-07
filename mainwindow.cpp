@@ -102,6 +102,22 @@ void MainWindow::indexActivatedFrom(const int index)
     this->setLineEnabled(this->ui->lineFrom, index);
 }
 
+void MainWindow::comboIndexChanged(const int index)
+{
+    if (index == 4)
+    {
+        this->hereRefCount++;
+        if (this->hereRefCount == 1)
+            pos->updatePosition();
+    }
+    else
+    {
+        this->hereRefCount--;
+        if (this->hereRefCount == 0)
+            pos->stopUpdates();
+    }
+}
+
 /* Returns the main part of the TFL URL */
 QString MainWindow::getBaseTFLURL()
 {
@@ -151,13 +167,11 @@ void MainWindow::setLineEnabled(QLineEdit *l, const int index)
     if (index == 4)
     {
         l->setEnabled(false);
-        pos->updatePosition();
     }
     else
     {
         l->setEnabled(true);
         l->setFocus();
-        pos->stopUpdates();
     }
 }
 

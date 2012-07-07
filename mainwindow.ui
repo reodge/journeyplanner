@@ -403,10 +403,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboFrom</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>comboIndexChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>278</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboTo</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>comboIndexChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>79</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>208</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>findRoute()</slot>
   <slot>indexActivatedTo(int)</slot>
   <slot>indexActivatedFrom(int)</slot>
+  <slot>comboIndexChanged(int)</slot>
  </slots>
 </ui>

@@ -33,6 +33,7 @@ public slots:
     void findRoute();
     void indexActivatedTo(const int index);
     void indexActivatedFrom(const int index);
+    void comboIndexChanged(const int index);
 
 private:
     Ui::MainWindow *ui;
