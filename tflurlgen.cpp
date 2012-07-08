@@ -3,11 +3,9 @@
 #include <QDesktopServices>
 #include <QDebug>
 
-
 TFLURLGen::TFLURLGen(QObject *parent) :
     QObject(parent)
 {
-    qDebug() << "TFLURLGen constructor called!" << endl;
 }
 
 /* Puts together the data and opens TFL website */
