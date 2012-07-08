@@ -1,11 +1,19 @@
 #include "tflurlgen.h"
 #include <QUrl>
 #include <QDesktopServices>
+#include <QNetworkRequest>
 #include <QDebug>
 
 TFLURLGen::TFLURLGen(QObject *parent) :
     QObject(parent)
 {
+    connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
+}
+
+void TFLURLGen::downloadReady (QNetworkReply *reply)
+{
+    qDebug() << "Download ready!\n" << endl;
+    qDebug() << reply->readAll() << endl;
 }
 
 /* Puts together the data and opens TFL website */
@@ -16,7 +24,7 @@ void TFLURLGen::openTFL(QString origin,
                         QString deparr,
                         QString datetime)
 {
-    QString url("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
+    QString url("http://journeyplanner.tfl.gov.uk/user/XML_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
 
     url.append("&type_origin=");
     url.append(origin_type);
@@ -31,5 +39,6 @@ void TFLURLGen::openTFL(QString origin,
 
     qDebug() << "Opening URL: " << url << endl;
 
-    QDesktopServices::openUrl(QUrl(url,QUrl::TolerantMode));
+    //QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
+    manager.get(QNetworkRequest(QUrl(url, QUrl::TolerantMode)));
 }

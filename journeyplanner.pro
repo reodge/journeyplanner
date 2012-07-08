@@ -16,9 +16,12 @@ symbian:TARGET.UID3 = 0xE23805DC
 # Allow network access on Symbian
 symbian:TARGET.CAPABILITY += NetworkServices
 
+# Allows using QNetworkManager and related classes
+QT += network
+
 # If your application uses the Qt Mobility libraries, uncomment
 # the following lines and add the respective components to the 
-# MOBILITY variable. 
+# MOBILITY variable.
 CONFIG += mobility
 MOBILITY += location
 

@@ -2,6 +2,8 @@
 #define TFLURLGEN_H
 
 #include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class TFLURLGen : public QObject
 {
@@ -18,8 +20,11 @@ public:
 signals:
     
 public slots:
+    void downloadReady (QNetworkReply *reply);
 
 private:
+    QNetworkAccessManager manager;
+
     QString getBaseTFLURL();
 };
 
