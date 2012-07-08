@@ -6,6 +6,7 @@
 #include <QtGui/QSlider>
 #include <QtGui/QDateTimeEdit>
 #include "position.h"
+#include "tflurlgen.h"
 
 namespace Ui {
     class MainWindow;
@@ -37,13 +38,12 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    Position *pos;
+    Position pos;
+    TFLURLGen url;
     int hereRefCount;
 
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);
-    QString getBaseTFLURL();
-    void openTFL();
     void showWaitDialog();
     void showError();
     void setLineEnabled(QLineEdit *l, const int index);

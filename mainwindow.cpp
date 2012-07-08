@@ -2,17 +2,15 @@
 #include "ui_mainwindow.h"
 
 #include <QtCore/QCoreApplication>
-#include <QDesktopServices>
 #include <QDebug>
-#include <QUrl>
 #include "qdatetimeediturl.h"
 #include "qsliderurl.h"
 #include "position.h"
+#include "tflurlgen.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    pos(new Position),
     hereRefCount(0)
 {
     ui->setupUi(this);
@@ -22,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete pos;
 }
 
 void MainWindow::setOrientation(ScreenOrientation orientation)
@@ -87,7 +84,12 @@ void MainWindow::findRoute()
         /* Here only the destination box is empty */
     }
 
-    openTFL();
+    url.openTFL(ui->lineFrom->text(),
+                ui->lineTo->text(),
+                ui->comboFrom->toUrlString(),
+                ui->comboTo->toUrlString(),
+                ui->sldDepArr->toUrlString(),
+                ui->dateTime->toUrlString());
 }
 
 /* Called when an element from combo box "To" is selected */
@@ -108,45 +110,14 @@ void MainWindow::comboIndexChanged(const int index)
     {
         this->hereRefCount++;
         if (this->hereRefCount == 1)
-            pos->updatePosition();
+            pos.updatePosition();
     }
     else
     {
         this->hereRefCount--;
         if (this->hereRefCount == 0)
-            pos->stopUpdates();
+            pos.stopUpdates();
     }
-}
-
-/* Returns the main part of the TFL URL */
-QString MainWindow::getBaseTFLURL()
-{
-    QString url("http://journeyplanner.tfl.gov.uk/user/XSLT_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
-
-    url.append("&type_origin=");
-    url.append(ui->comboFrom->toUrlString());
-    url.append("&type_destination=");
-    url.append(ui->comboTo->toUrlString());
-    url.append(ui->sldDepArr->toUrlString());
-    url.append(ui->dateTime->toUrlString());
-
-    return url;
-}
-
-/* Puts together the data and opens TFL website */
-void MainWindow::openTFL()
-{
-    QString url = getBaseTFLURL();
-    url.append("&name_origin=");
-    url.append(ui->lineFrom->text());
-    url.append("&name_destination=");
-    url.append(ui->lineTo->text());
-
-    /* For testing */
-    qDebug() << "Opening URL: " << url << endl;
-    /* End testing section */
-
-    QDesktopServices::openUrl(QUrl(url,QUrl::TolerantMode));
 }
 
 /* Shows a waiting dialog, used while waiting for something long running */
