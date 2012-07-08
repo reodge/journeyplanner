@@ -15,10 +15,11 @@ void TFLURLGen::downloadReady (QNetworkReply *reply)
 {
     bool parsed = this->xmlReader.parse(QXmlInputSource(reply));
 
-    if (parsed)
-        qDebug() << "Parsing succeeded" << endl;
-    else
+    if (!parsed)
+    {
         qDebug() << "Parsing failed" << endl;
+        /* TODO Show to user? */
+    }
 }
 
 /* Puts together the data and opens TFL website */
