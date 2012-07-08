@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QXmlSimpleReader>
 
 class TFLURLGen : public QObject
 {
@@ -24,6 +25,7 @@ public slots:
 
 private:
     QNetworkAccessManager manager;
+    QXmlSimpleReader xmlReader;
 
     QString getBaseTFLURL();
 };

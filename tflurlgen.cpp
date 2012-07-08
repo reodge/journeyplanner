@@ -2,6 +2,7 @@
 #include <QUrl>
 #include <QDesktopServices>
 #include <QNetworkRequest>
+#include <QXmlInputSource>
 #include <QDebug>
 
 TFLURLGen::TFLURLGen(QObject *parent) :
@@ -12,8 +13,12 @@ TFLURLGen::TFLURLGen(QObject *parent) :
 
 void TFLURLGen::downloadReady (QNetworkReply *reply)
 {
-    qDebug() << "Download ready!\n" << endl;
-    qDebug() << reply->readAll() << endl;
+    bool parsed = this->xmlReader.parse(QXmlInputSource(reply));
+
+    if (parsed)
+        qDebug() << "Parsing succeeded" << endl;
+    else
+        qDebug() << "Parsing failed" << endl;
 }
 
 /* Puts together the data and opens TFL website */

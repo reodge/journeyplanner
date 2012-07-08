@@ -17,7 +17,7 @@ symbian:TARGET.UID3 = 0xE23805DC
 symbian:TARGET.CAPABILITY += NetworkServices
 
 # Allows using QNetworkManager and related classes
-QT += network
+QT += network xml
 
 # If your application uses the Qt Mobility libraries, uncomment
 # the following lines and add the respective components to the 
