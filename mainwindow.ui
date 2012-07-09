@@ -26,7 +26,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string/>
+         <string>SW194BH</string>
         </property>
         <property name="placeholderText">
          <string>From</string>
@@ -37,6 +37,9 @@
        <widget class="QComboBoxUrl" name="comboFrom">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
         </property>
         <property name="maxVisibleItems">
          <number>4</number>
@@ -70,6 +73,9 @@
       </item>
       <item>
        <widget class="QLineEdit" name="lineTo">
+        <property name="text">
+         <string>HA38BA</string>
+        </property>
         <property name="placeholderText">
          <string>To</string>
         </property>
@@ -79,6 +85,9 @@
        <widget class="QComboBoxUrl" name="comboTo">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
         </property>
         <property name="maxVisibleItems">
          <number>4</number>
