@@ -8,6 +8,7 @@
 TFLURLGen::TFLURLGen(QObject *parent) :
     QObject(parent)
 {
+    xmlReader.setContentHandler(&xmlHandler);
     connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
 }
 
@@ -30,7 +31,7 @@ void TFLURLGen::openTFL(QString origin,
                         QString deparr,
                         QString datetime)
 {
-    QString url("http://journeyplanner.tfl.gov.uk/user/XML_TRIP_REQUEST2?language=en&ptOptionsActive=-1&sessionID=0");
+    QString url("http://journeyplanner.tfl.gov.uk/user/XML_TRIP_REQUEST2?language=en&ptOptionsActive=-1&");
 
     url.append("&type_origin=");
     url.append(origin_type);

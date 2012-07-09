@@ -1,6 +1,7 @@
 #ifndef TFLURLGEN_H
 #define TFLURLGEN_H
 
+#include "tflxmlhandler.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -25,6 +26,7 @@ public slots:
 
 private:
     QNetworkAccessManager manager;
+    TFLXmlHandler xmlHandler;
     QXmlSimpleReader xmlReader;
 
     QString getBaseTFLURL();

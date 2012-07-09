@@ -30,13 +30,15 @@ SOURCES += main.cpp mainwindow.cpp \
     qsliderurl.cpp \
     qcomboboxurl.cpp \
     position.cpp \
-    tflurlgen.cpp
+    tflurlgen.cpp \
+    tflxmlhandler.cpp
 HEADERS += mainwindow.h \
     qdatetimeediturl.h \
     qsliderurl.h \
     qcomboboxurl.h \
     position.h \
-    tflurlgen.h
+    tflurlgen.h \
+    tflxmlhandler.h
 FORMS += mainwindow.ui
 
 # Please do not modify the following two lines. Required for deployment.
