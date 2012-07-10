@@ -2,7 +2,9 @@
 #include <QDebug>
 
 TFLXmlHandler::TFLXmlHandler() :
-    QXmlDefaultHandler()
+    QXmlDefaultHandler(),
+    new_route(false),
+    route_num(1)
 {
 }
 
@@ -25,11 +27,14 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
                                  const QString &qName,
                                  const QXmlAttributes &atts)
 {
-    qDebug() << "---<"<< localName << ">-----------------------";
+    Q_UNUSED (namespaceURI);
+    Q_UNUSED (localName);
+    Q_UNUSED (atts);
 
-    for (int i = 0; i < atts.length(); i++)
+    if (qName == "itdRoute")
     {
-        qDebug() << "  " << atts.localName(i) << " = " << atts.value(i);
+        qDebug() << "Route " << route_num;
+        new_route = true;
     }
 
     return true;
@@ -37,7 +42,7 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
 
 bool TFLXmlHandler::characters(const QString &ch)
 {
-    qDebug() << ch;
+    Q_UNUSED (ch);
 
     return true;
 }
@@ -46,7 +51,19 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
                                const QString &localName,
                                const QString &qName)
 {
-    qDebug() << "---</"<< localName << ">----------------------";
+    Q_UNUSED (namespaceURI);
+    Q_UNUSED (localName);
+
+    if (qName == "itdRoute")
+        route_num++;
 
     return true;
+}
+
+bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
+{
+    qDebug() << "Parsing failed: " << exception.message() << endl <<
+                " Line: " << exception.lineNumber() << ", Column: " << exception.columnNumber() << endl;
+
+    return false;
 }

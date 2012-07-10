@@ -5,6 +5,10 @@
 
 class TFLXmlHandler : public QXmlDefaultHandler
 {
+private:
+    bool new_route;
+    int route_num;
+
 public:
     explicit TFLXmlHandler();
 
@@ -22,6 +26,8 @@ public:
     virtual bool endElement(const QString &namespaceURI,
                             const QString &localName,
                             const QString &qName);
+
+    virtual bool fatalError(const QXmlParseException &exception);
 };
 
 #endif // TFLXMLHANDLER_H
