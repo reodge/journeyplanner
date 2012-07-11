@@ -31,15 +31,18 @@ SOURCES += main.cpp mainwindow.cpp \
     qcomboboxurl.cpp \
     position.cpp \
     tflurlgen.cpp \
-    tflxmlhandler.cpp
+    tflxmlhandler.cpp \
+    routeviewer.cpp
 HEADERS += mainwindow.h \
     qdatetimeediturl.h \
     qsliderurl.h \
     qcomboboxurl.h \
     position.h \
     tflurlgen.h \
-    tflxmlhandler.h
-FORMS += mainwindow.ui
+    tflxmlhandler.h \
+    routeviewer.h
+FORMS += mainwindow.ui \
+    routeviewer.ui
 
 # Please do not modify the following two lines. Required for deployment.
 include(deployment.pri)

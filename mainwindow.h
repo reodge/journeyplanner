@@ -7,6 +7,7 @@
 #include <QtGui/QDateTimeEdit>
 #include "position.h"
 #include "tflurlgen.h"
+#include "routeviewer.h"
 
 namespace Ui {
     class MainWindow;
@@ -38,6 +39,8 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+    RouteViewer *rv;
+
     Position pos;
     TFLURLGen url;
     int hereRefCount;

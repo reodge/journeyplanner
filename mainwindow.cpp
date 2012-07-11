@@ -7,14 +7,20 @@
 #include "qsliderurl.h"
 #include "position.h"
 #include "tflurlgen.h"
+#include "routeviewer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    rv(new RouteViewer(this)),
     hereRefCount(0)
 {
     ui->setupUi(this);
     setupGeneral();
+#if defined(Q_WS_MAEMO_5)
+    this->setAttribute(Qt::WA_Maemo5StackedWindow);
+    rv->setAttribute(Qt::WA_Maemo5StackedWindow);
+#endif
 }
 
 MainWindow::~MainWindow()
