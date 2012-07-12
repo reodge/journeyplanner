@@ -9,6 +9,7 @@
 #include "routedatagen.h"
 #include "routeviewer.h"
 #include "routeitinerary.h"
+#include "rawdata.h"
 
 namespace Ui {
     class MainWindow;
@@ -44,7 +45,8 @@ private:
     RouteViewer *rv;
 
     Position pos;
-    RouteDataGen data;
+    RawData data;
+    RouteDataGen routeData;
     int hereRefCount;
 
     QString comboIndexToUrl(QComboBox *c);

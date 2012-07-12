@@ -17,7 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     rv(new RouteViewer(this)),
-    data(this),
+    data(ui, &pos),
+    routeData(&data, this),
     hereRefCount(0)
 {
     ui->setupUi(this);
@@ -87,12 +88,11 @@ void MainWindow::findRoute()
         return;
     }
 
-    data.openTFL(ui->lineFrom->text(),
-                ui->lineTo->text(),
-                ui->comboFrom->toUrlString(),
-                ui->comboTo->toUrlString(),
-                ui->sldDepArr->toUrlString(),
-                ui->dateTime->toUrlString());
+    routeData.openTFL(ui->lineTo->text(),
+                      ui->comboFrom->toUrlString(),
+                      ui->comboTo->toUrlString(),
+                      ui->sldDepArr->toUrlString(),
+                      ui->dateTime->toUrlString());
 }
 
 /* Called when an element from combo box "To" is selected */

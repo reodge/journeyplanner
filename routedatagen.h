@@ -2,6 +2,7 @@
 #define TFLURLGEN_H
 
 #include "tflxmlhandler.h"
+#include "rawdata.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -11,9 +12,8 @@ class RouteDataGen : public QObject
 {
     Q_OBJECT
 public:
-    explicit RouteDataGen(QObject *parent = 0);
-    void openTFL(QString origin,
-                 QString dest,
+    explicit RouteDataGen(RawData *data, QObject *parent = 0);
+    void openTFL(QString dest,
                  QString origin_type,
                  QString dest_type,
                  QString deparr,
@@ -25,6 +25,7 @@ public slots:
     void downloadReady (QNetworkReply *reply);
 
 private:
+    RawData *data;
     QNetworkAccessManager manager;
     TFLXmlHandler xmlHandler;
     QXmlSimpleReader xmlReader;

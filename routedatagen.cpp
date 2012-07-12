@@ -1,4 +1,5 @@
 #include "routedatagen.h"
+#include "rawdata.h"
 #include <QUrl>
 #include <QDesktopServices>
 #include <QNetworkRequest>
@@ -9,9 +10,10 @@
 #include <QtMaemo5>
 #endif
 
-RouteDataGen::RouteDataGen(QObject *parent) :
+RouteDataGen::RouteDataGen(RawData *data, QObject *parent) :
     QObject(parent)
 {
+    this->data = data;
     xmlReader.setContentHandler(&xmlHandler);
     connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
     //connect(&(this->xmlHandler), SIGNAL(routesReady(RouteItinerary*)), parent, SLOT(routeDataReady(RouteItinerary*)));
@@ -23,11 +25,11 @@ void RouteDataGen::downloadReady (QNetworkReply *reply)
     {
         QString errorString(reply->errorString());
 
+        qDebug() << errorString;
+
         #if defined(Q_WS_MAEMO_5)
             QMaemo5InformationBox::information(NULL, errorString, QMaemo5InformationBox::NoTimeout);
         #endif
-
-        qDebug() << errorString;
 
         reply->deleteLater();
         return;
@@ -40,15 +42,14 @@ void RouteDataGen::downloadReady (QNetworkReply *reply)
 }
 
 /* Puts together the data and opens TFL website */
-void RouteDataGen::openTFL(QString origin,
-                        QString dest,
-                        QString origin_type,
-                        QString dest_type,
-                        QString deparr,
-                        QString datetime)
+void RouteDataGen::openTFL(QString dest,
+                           QString origin_type,
+                           QString dest_type,
+                           QString deparr,
+                           QString datetime)
 {
-    Q_UNUSED (deparr);
-    Q_UNUSED (datetime);
+    Q_UNUSED(deparr);
+    Q_UNUSED(datetime);
 
     QString url("http://journeyplanner.tfl.gov.uk/user/XML_TRIP_REQUEST2?language=en");
 
@@ -57,7 +58,7 @@ void RouteDataGen::openTFL(QString origin,
     url.append("&type_destination=");
     url.append(dest_type);
     url.append("&name_origin=");
-    url.append(origin);
+    url.append(data->getOrigin());
     url.append("&name_destination=");
     url.append(dest);
 
