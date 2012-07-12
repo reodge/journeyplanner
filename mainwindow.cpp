@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     rv(new RouteViewer(this)),
-    url(this),
     hereRefCount(0)
 {
     ui->setupUi(this);
