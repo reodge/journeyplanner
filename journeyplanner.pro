@@ -35,21 +35,21 @@ SOURCES += main.cpp mainwindow.cpp \
     qsliderurl.cpp \
     qcomboboxurl.cpp \
     position.cpp \
-    tflurlgen.cpp \
     tflxmlhandler.cpp \
     routeviewer.cpp \
     route.cpp \
-    routeitinerary.cpp
+    routeitinerary.cpp \
+    routedatagen.cpp
 HEADERS += mainwindow.h \
     qdatetimeediturl.h \
     qsliderurl.h \
     qcomboboxurl.h \
     position.h \
-    tflurlgen.h \
     tflxmlhandler.h \
     routeviewer.h \
     route.h \
-    routeitinerary.h
+    routeitinerary.h \
+    routedatagen.h
 FORMS += mainwindow.ui \
     routeviewer.ui
 

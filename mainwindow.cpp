@@ -6,7 +6,7 @@
 #include "qdatetimeediturl.h"
 #include "qsliderurl.h"
 #include "position.h"
-#include "tflurlgen.h"
+#include "routedatagen.h"
 #include "routeviewer.h"
 
 #if defined(Q_WS_MAEMO_5)
@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     rv(new RouteViewer(this)),
-    url(this),
+    data(this),
     hereRefCount(0)
 {
     ui->setupUi(this);
@@ -87,7 +87,7 @@ void MainWindow::findRoute()
         return;
     }
 
-    url.openTFL(ui->lineFrom->text(),
+    data.openTFL(ui->lineFrom->text(),
                 ui->lineTo->text(),
                 ui->comboFrom->toUrlString(),
                 ui->comboTo->toUrlString(),

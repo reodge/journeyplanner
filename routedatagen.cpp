@@ -1,4 +1,4 @@
-#include "tflurlgen.h"
+#include "routedatagen.h"
 #include <QUrl>
 #include <QDesktopServices>
 #include <QNetworkRequest>
@@ -9,7 +9,7 @@
 #include <QtMaemo5>
 #endif
 
-TFLURLGen::TFLURLGen(QObject *parent) :
+RouteDataGen::RouteDataGen(QObject *parent) :
     QObject(parent)
 {
     xmlReader.setContentHandler(&xmlHandler);
@@ -17,7 +17,7 @@ TFLURLGen::TFLURLGen(QObject *parent) :
     //connect(&(this->xmlHandler), SIGNAL(routesReady(RouteItinerary*)), parent, SLOT(routeDataReady(RouteItinerary*)));
 }
 
-void TFLURLGen::downloadReady (QNetworkReply *reply)
+void RouteDataGen::downloadReady (QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -40,7 +40,7 @@ void TFLURLGen::downloadReady (QNetworkReply *reply)
 }
 
 /* Puts together the data and opens TFL website */
-void TFLURLGen::openTFL(QString origin,
+void RouteDataGen::openTFL(QString origin,
                         QString dest,
                         QString origin_type,
                         QString dest_type,

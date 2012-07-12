@@ -7,11 +7,11 @@
 #include <QNetworkReply>
 #include <QXmlSimpleReader>
 
-class TFLURLGen : public QObject
+class RouteDataGen : public QObject
 {
     Q_OBJECT
 public:
-    explicit TFLURLGen(QObject *parent = 0);
+    explicit RouteDataGen(QObject *parent = 0);
     void openTFL(QString origin,
                  QString dest,
                  QString origin_type,

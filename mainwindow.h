@@ -6,7 +6,7 @@
 #include <QtGui/QSlider>
 #include <QtGui/QDateTimeEdit>
 #include "position.h"
-#include "tflurlgen.h"
+#include "routedatagen.h"
 #include "routeviewer.h"
 #include "routeitinerary.h"
 
@@ -44,7 +44,7 @@ private:
     RouteViewer *rv;
 
     Position pos;
-    TFLURLGen url;
+    RouteDataGen data;
     int hereRefCount;
 
     QString comboIndexToUrl(QComboBox *c);
