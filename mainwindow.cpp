@@ -96,6 +96,8 @@ void MainWindow::findRoute()
                 ui->comboTo->toUrlString(),
                 ui->sldDepArr->toUrlString(),
                 ui->dateTime->toUrlString());
+
+    rv->show();
 }
 
 /* Called when an element from combo box "To" is selected */
