@@ -14,6 +14,7 @@ TFLURLGen::TFLURLGen(QObject *parent) :
 {
     xmlReader.setContentHandler(&xmlHandler);
     connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
+    //connect(&(this->xmlHandler), SIGNAL(routesReady(RouteItinerary*)), parent, SLOT(routeDataReady(RouteItinerary*)));
 }
 
 void TFLURLGen::downloadReady (QNetworkReply *reply)

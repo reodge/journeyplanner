@@ -4,20 +4,21 @@
 TFLXmlHandler::TFLXmlHandler() :
     QXmlDefaultHandler(),
     new_route(false),
-    route_num(1)
+    route_num(1),
+    routes(new RouteItinerary)
 {
 }
 
 bool TFLXmlHandler::startDocument()
 {
-    qDebug() << "Parsing started";
+    qDebug() << ("Parsing started");
 
     return true;
 }
 
 bool TFLXmlHandler::endDocument()
 {
-    qDebug() << "Parsing ended";
+    qDebug("Parsing ended");
 
     return true;
 }

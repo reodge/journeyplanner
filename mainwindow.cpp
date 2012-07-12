@@ -9,10 +9,15 @@
 #include "tflurlgen.h"
 #include "routeviewer.h"
 
+#if defined(Q_WS_MAEMO_5)
+#include <QtMaemo5>
+#endif
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     rv(new RouteViewer(this)),
+    url(this),
     hereRefCount(0)
 {
     ui->setupUi(this);
@@ -74,20 +79,12 @@ void MainWindow::showExpanded()
    checks for empty from or to boxes and uses the current position if so. */
 void MainWindow::findRoute()
 {
-    if (ui->lineFrom->text().isEmpty())
+    if ((ui->lineFrom->text().isEmpty() && ui->lineFrom->isEnabled()) ||
+        (ui->lineTo->text().isEmpty() && ui->lineTo->isEnabled()))
     {
-        if (ui->lineTo->text().isEmpty())
-        {
-            /* Both boxes are empty, show an error */
-            showError();
-            return;
-        }
-
-        /* Here only the origin box is empty */
-    }
-    else if (ui->lineTo->text().isEmpty())
-    {
-        /* Here only the destination box is empty */
+        /* One of the text fields is empty */
+        inputDataError();
+        return;
     }
 
     url.openTFL(ui->lineFrom->text(),
@@ -96,8 +93,6 @@ void MainWindow::findRoute()
                 ui->comboTo->toUrlString(),
                 ui->sldDepArr->toUrlString(),
                 ui->dateTime->toUrlString());
-
-    rv->show();
 }
 
 /* Called when an element from combo box "To" is selected */
@@ -128,16 +123,25 @@ void MainWindow::comboIndexChanged(const int index)
     }
 }
 
-/* Shows a waiting dialog, used while waiting for something long running */
-void MainWindow::showWaitDialog()
+void MainWindow::routeDataReady(const RouteItinerary *itinerary)
 {
-    qDebug() << "Now showing waiting dialog" << endl;
+    Q_UNUSED(itinerary);
+
+    qDebug() << "Route data is ready!";
+
+    rv->show();
 }
 
 /* Shows an error dialog box. Currently only used if both boxes are empty upon clicking Go */
-void MainWindow::showError()
+void MainWindow::inputDataError()
 {
-    qDebug() << "ERROR: Both boxes are empty!" << endl;
+    QString errorString("Make sure both text boxes are filled out");
+
+#if defined(Q_WS_MAEMO_5)
+    QMaemo5InformationBox::information(NULL, errorString, QMaemo5InformationBox::DefaultTimeout);
+#endif
+
+    qDebug() << errorString;
 }
 
 /* Helper function to set enabled state of LineEdit From and To widgets based on index from combo boxes */

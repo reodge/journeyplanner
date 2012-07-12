@@ -37,7 +37,9 @@ SOURCES += main.cpp mainwindow.cpp \
     position.cpp \
     tflurlgen.cpp \
     tflxmlhandler.cpp \
-    routeviewer.cpp
+    routeviewer.cpp \
+    route.cpp \
+    routeitinerary.cpp
 HEADERS += mainwindow.h \
     qdatetimeediturl.h \
     qsliderurl.h \
@@ -45,7 +47,9 @@ HEADERS += mainwindow.h \
     position.h \
     tflurlgen.h \
     tflxmlhandler.h \
-    routeviewer.h
+    routeviewer.h \
+    route.h \
+    routeitinerary.h
 FORMS += mainwindow.ui \
     routeviewer.ui
 

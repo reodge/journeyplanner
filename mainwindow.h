@@ -8,6 +8,7 @@
 #include "position.h"
 #include "tflurlgen.h"
 #include "routeviewer.h"
+#include "routeitinerary.h"
 
 namespace Ui {
     class MainWindow;
@@ -36,6 +37,7 @@ public slots:
     void indexActivatedTo(const int index);
     void indexActivatedFrom(const int index);
     void comboIndexChanged(const int index);
+    void routeDataReady(const RouteItinerary *itinerary);
 
 private:
     Ui::MainWindow *ui;
@@ -47,8 +49,7 @@ private:
 
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);
-    void showWaitDialog();
-    void showError();
+    void inputDataError();
     void setLineEnabled(QLineEdit *l, const int index);
 
     void setupGeneral();
