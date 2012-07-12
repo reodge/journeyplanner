@@ -5,6 +5,10 @@
 #include <QXmlInputSource>
 #include <QDebug>
 
+#if defined(Q_WS_MAEMO_5)
+#include <QtMaemo5>
+#endif
+
 TFLURLGen::TFLURLGen(QObject *parent) :
     QObject(parent)
 {
@@ -16,7 +20,14 @@ void TFLURLGen::downloadReady (QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qDebug() << "Network error: " << reply->errorString();
+        QString errorString(reply->errorString());
+
+        #if defined(Q_WS_MAEMO_5)
+            QMaemo5InformationBox::information(NULL, errorString, QMaemo5InformationBox::NoTimeout);
+        #endif
+
+        qDebug() << errorString;
+
         reply->deleteLater();
         return;
     }

@@ -16,6 +16,11 @@ symbian:TARGET.UID3 = 0xE23805DC
 # Allow network access on Symbian
 symbian:TARGET.CAPABILITY += NetworkServices
 
+# Allows using Maemo 5 specific functionality
+maemo5 {
+QT += maemo5
+}
+
 # Allows using QNetworkManager and related classes
 QT += network xml
 
