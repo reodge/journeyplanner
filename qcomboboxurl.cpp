@@ -42,7 +42,7 @@ void QComboBoxUrl::indexActivated(const int index)
 }
 
 /* Turns current index from this combo box into a string to be added to a url. */
-QString QComboBoxUrl::toUrlString() const
+QString QComboBoxUrl::toString() const
 {
     switch(this->currentIndex())
     {
@@ -54,6 +54,8 @@ QString QComboBoxUrl::toUrlString() const
         return QString("address");
     case 3:
         return QString("poi");
+    case 4:
+        /* type to use for position data */
     default:
         return QString("");
     }

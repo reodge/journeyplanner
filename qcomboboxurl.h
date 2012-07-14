@@ -9,7 +9,7 @@ class QComboBoxUrl : public QComboBox
 public:
     explicit QComboBoxUrl(QWidget *parent = 0);
 
-    QString toUrlString() const;
+    QString toString() const;
 
 signals:
 

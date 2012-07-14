@@ -9,7 +9,7 @@ class QSliderUrl : public QSlider
 public:
     explicit QSliderUrl(QWidget *parent = 0);
 
-    QString toUrlString() const;
+    QString toString() const;
 
 signals:
 

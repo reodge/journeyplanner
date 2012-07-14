@@ -88,11 +88,7 @@ void MainWindow::findRoute()
         return;
     }
 
-    routeData.openTFL(ui->lineTo->text(),
-                      ui->comboFrom->toUrlString(),
-                      ui->comboTo->toUrlString(),
-                      ui->sldDepArr->toUrlString(),
-                      ui->dateTime->toUrlString());
+    routeData.openTFL();
 }
 
 /* Called when an element from combo box "To" is selected */

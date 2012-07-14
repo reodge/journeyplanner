@@ -42,25 +42,29 @@ void RouteDataGen::downloadReady (QNetworkReply *reply)
 }
 
 /* Puts together the data and opens TFL website */
-void RouteDataGen::openTFL(QString dest,
-                           QString origin_type,
-                           QString dest_type,
-                           QString deparr,
-                           QString datetime)
+void RouteDataGen::openTFL()
 {
-    Q_UNUSED(deparr);
-    Q_UNUSED(datetime);
-
     QString url("http://journeyplanner.tfl.gov.uk/user/XML_TRIP_REQUEST2?language=en");
 
+    /* Useful stuff to add later */
+    //QString url("&itdTripDateTimeDepArr=");
+    //url.append("&itdDateDay=");
+    //url.append(this->toString("d"));
+    //url.append("&itdDateYearMonth=");
+    //url.append(this->toString("yyyyMM"));
+    //url.append("&itdTimeHour=");
+    //url.append(this->toString("h"));
+    //url.append("&itdTimeMinute=");
+    //url.append(this->toString("m"));
+
     url.append("&type_origin=");
-    url.append(origin_type);
+    url.append(data->getOriginType());
     url.append("&type_destination=");
-    url.append(dest_type);
+    url.append(data->getDestType());
     url.append("&name_origin=");
     url.append(data->getOrigin());
     url.append("&name_destination=");
-    url.append(dest);
+    url.append(data->getDest());
 
     qDebug() << "Opening URL: " << url << endl;
 

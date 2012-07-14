@@ -6,16 +6,14 @@ QSliderUrl::QSliderUrl(QWidget *parent) :
 }
 
 /* Turns current value of slider into string to put into URL */
-QString QSliderUrl::toUrlString() const
+QString QSliderUrl::toString() const
 {
-    QString url("&itdTripDateTimeDepArr=");
-
     switch(this->value())
     {
     case 0:
-        return url.append("dep");
+        return QString("dep");
     case 1:
-        return url.append("arr");
+        return QString("arr");
     default:
         return QString("");
     }

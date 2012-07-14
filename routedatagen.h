@@ -13,11 +13,7 @@ class RouteDataGen : public QObject
     Q_OBJECT
 public:
     explicit RouteDataGen(RawData *data, QObject *parent = 0);
-    void openTFL(QString dest,
-                 QString origin_type,
-                 QString dest_type,
-                 QString deparr,
-                 QString datetime);
+    void openTFL();
     
 signals:
     

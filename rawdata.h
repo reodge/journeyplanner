@@ -13,7 +13,14 @@ private:
 public:
     RawData(Ui::MainWindow *form, Position *pos);
 
+    const QString getOriginType();
+    const QString getDestType();
+
     const QString getOrigin();
+    const QString getDest();
+
+    const QString getDepArr();
+    const QString getDateTime(const QString& format) const;
 };
 
 #endif // RAWDATA_H

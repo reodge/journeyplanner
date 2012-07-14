@@ -11,8 +11,6 @@ public:
 
     QString toString(const QString& format) const;
 
-    QString toUrlString() const;
-
 signals:
 
 public slots:
