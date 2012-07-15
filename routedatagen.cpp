@@ -1,4 +1,5 @@
 #include "routedatagen.h"
+#include "routeitinerary.h"
 #include "rawdata.h"
 #include <QUrl>
 #include <QDesktopServices>
@@ -16,7 +17,6 @@ RouteDataGen::RouteDataGen(RawData *data, QObject *parent) :
     this->data = data;
     xmlReader.setContentHandler(&xmlHandler);
     connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
-    //connect(&(this->xmlHandler), SIGNAL(routesReady(RouteItinerary*)), parent, SLOT(routeDataReady(RouteItinerary*)));
 }
 
 void RouteDataGen::downloadReady (QNetworkReply *reply)
@@ -36,13 +36,27 @@ void RouteDataGen::downloadReady (QNetworkReply *reply)
     }
 
     if (!this->xmlReader.parse(QXmlInputSource(reply)))
+    {
         qDebug() << "Parsing failed" << endl;
+    }
+    else
+    {
+        /* We need to figure out how to clean this up ... we currently rely on the
+           dataReady signal getting connected to a slot which deletes ri.
+         */
+        RouteItinerary *ri;
+
+        if (xmlHandler.getRoutes(ri))
+            emit dataReady(ri);
+        else
+            qDebug() << "Parsing succeeded, but no routes." << endl;
+    }
 
     reply->deleteLater();
 }
 
 /* Puts together the data and opens TFL website */
-void RouteDataGen::openTFL()
+void RouteDataGen::getData()
 {
     QString url("http://journeyplanner.tfl.gov.uk/user/XML_TRIP_REQUEST2?language=en");
 

@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setAttribute(Qt::WA_Maemo5StackedWindow);
     rv->setAttribute(Qt::WA_Maemo5StackedWindow);
 #endif
+
+    connect(&routeData, SIGNAL(dataReady(RouteItinerary*)), this, SLOT(routeDataReady(RouteItinerary*)));
 }
 
 MainWindow::~MainWindow()
@@ -88,7 +90,7 @@ void MainWindow::findRoute()
         return;
     }
 
-    routeData.openTFL();
+    routeData.getData();
 }
 
 /* Called when an element from combo box "To" is selected */
@@ -119,7 +121,7 @@ void MainWindow::comboIndexChanged(const int index)
     }
 }
 
-void MainWindow::routeDataReady(const RouteItinerary *itinerary)
+void MainWindow::routeDataReady(RouteItinerary *itinerary)
 {
     Q_UNUSED(itinerary);
 

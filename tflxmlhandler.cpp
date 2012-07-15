@@ -5,13 +5,18 @@ TFLXmlHandler::TFLXmlHandler() :
     QXmlDefaultHandler(),
     new_route(false),
     route_num(1),
-    routes(new RouteItinerary)
+    routes(0)
 {
 }
 
 bool TFLXmlHandler::startDocument()
 {
     qDebug() << ("Parsing started");
+
+    /* TODO decide if we want to delete routes here, it is currently
+       passed out as a pointer to other classes, so may not be safe.
+     */
+    routes = new RouteItinerary;
 
     return true;
 }
@@ -67,4 +72,16 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
                 " Line: " << exception.lineNumber() << ", Column: " << exception.columnNumber() << endl;
 
     return false;
+}
+
+/* Returns true if a route itinerary is available and sets itinerary to point to it.
+   itinerary must be freeds by the called.
+   Returns false if no routes are available. */
+bool TFLXmlHandler::getRoutes(RouteItinerary *itinerary)
+{
+    if (!routes)
+        return false;
+
+    itinerary = routes;
+    return true;
 }

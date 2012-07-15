@@ -38,7 +38,7 @@ public slots:
     void indexActivatedTo(const int index);
     void indexActivatedFrom(const int index);
     void comboIndexChanged(const int index);
-    void routeDataReady(const RouteItinerary *itinerary);
+    void routeDataReady(RouteItinerary *itinerary);
 
 private:
     Ui::MainWindow *ui;

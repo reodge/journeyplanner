@@ -16,22 +16,24 @@ private:
 public:
     explicit TFLXmlHandler();
 
-    virtual bool startDocument();
+    bool startDocument();
 
-    virtual bool endDocument();
+    bool endDocument();
 
-    virtual bool startElement(const QString &namespaceURI,
-                              const QString &localName,
-                              const QString &qName,
-                              const QXmlAttributes &atts);
+    bool startElement(const QString &namespaceURI,
+                      const QString &localName,
+                      const QString &qName,
+                      const QXmlAttributes &atts);
 
-    virtual bool characters(const QString &ch);
+    bool characters(const QString &ch);
 
-    virtual bool endElement(const QString &namespaceURI,
-                            const QString &localName,
-                            const QString &qName);
+    bool endElement(const QString &namespaceURI,
+                    const QString &localName,
+                    const QString &qName);
 
-    virtual bool fatalError(const QXmlParseException &exception);
+    bool fatalError(const QXmlParseException &exception);
+
+    bool getRoutes(RouteItinerary *itinerary);
 };
 
 #endif // TFLXMLHANDLER_H
