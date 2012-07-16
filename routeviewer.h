@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
+#include "routeitinerary.h"
 
 namespace Ui {
 class RouteViewer;
@@ -18,9 +19,12 @@ public slots:
 public:
     explicit RouteViewer(QWidget *parent = 0);
     ~RouteViewer();
+
+    void setData(RouteItinerary *itinerary);
     
 private:
     Ui::RouteViewer *ui;
+    RouteItinerary *ri;
 };
 
 #endif // ROUTEVIEWER_H

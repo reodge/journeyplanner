@@ -127,6 +127,7 @@ void MainWindow::routeDataReady(RouteItinerary *itinerary)
 
     qDebug() << "Route data is ready!";
 
+    rv->setData(itinerary);
     rv->show();
 }
 

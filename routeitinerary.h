@@ -11,6 +11,9 @@ private:
 
 public:
     RouteItinerary();
+
+    int length();
+    void addRoute(const Route &r);
 };
 
 #endif // ROUTEITINERARY_H

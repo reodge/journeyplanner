@@ -5,7 +5,8 @@
 
 RouteViewer::RouteViewer(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::RouteViewer)
+    ui(new Ui::RouteViewer),
+    ri(0)
 {
     ui->setupUi(this);
 
@@ -23,4 +24,19 @@ RouteViewer::~RouteViewer()
 void RouteViewer::itemClicked(QListWidgetItem *item)
 {
     qDebug() << item->text();
+}
+
+void RouteViewer::setData(RouteItinerary *itinerary)
+{
+    if (ri)
+        delete ri;
+
+    ui->listWidget->clear();
+
+    ri = itinerary;
+
+    for (int i = 0; i < ri->length(); i++)
+    {
+        ui->listWidget->addItem(QString::number(i) + "route number");
+    }
 }

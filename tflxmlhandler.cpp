@@ -40,7 +40,10 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
     if (qName == "itdRoute")
     {
         qDebug() << "Route " << route_num;
-        new_route = true;
+        if (current_route)
+            delete current_route;
+
+        current_route = new Route;
     }
 
     return true;
@@ -61,7 +64,10 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
     Q_UNUSED (localName);
 
     if (qName == "itdRoute")
+    {
+        routes->addRoute(*current_route);
         route_num++;
+    }
 
     return true;
 }
@@ -77,7 +83,7 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
 /* Returns true if a route itinerary is available and sets itinerary to point to it.
    itinerary must be freeds by the called.
    Returns false if no routes are available. */
-bool TFLXmlHandler::getRoutes(RouteItinerary *itinerary)
+bool TFLXmlHandler::getRoutes(RouteItinerary *&itinerary)
 {
     if (!routes)
         return false;

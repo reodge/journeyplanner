@@ -33,7 +33,7 @@ public:
 
     bool fatalError(const QXmlParseException &exception);
 
-    bool getRoutes(RouteItinerary *itinerary);
+    bool getRoutes(RouteItinerary *&itinerary);
 };
 
 #endif // TFLXMLHANDLER_H
