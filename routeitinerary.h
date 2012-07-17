@@ -14,6 +14,7 @@ public:
 
     int length();
     void addRoute(const Route &r);
+    QString routeString(const unsigned n);
 };
 
 #endif // ROUTEITINERARY_H

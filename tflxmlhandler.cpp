@@ -10,6 +10,25 @@ TFLXmlHandler::TFLXmlHandler() :
 {
 }
 
+void TFLXmlHandler::saveRouteAttributes(const QXmlAttributes &atts)
+{
+    if (!current_route)
+        return;
+
+    bool ok = true;
+
+    for (int i = 0; i < atts.count(); i++)
+    {
+        QString key = atts.qName(i);
+        long long val = atts.value(i).toLongLong(&ok);
+
+        if (!ok)
+            continue;
+
+        current_route->setAttr(key, val);
+    }
+}
+
 bool TFLXmlHandler::startDocument()
 {
     qDebug() << ("Parsing started");
@@ -45,6 +64,11 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
             delete current_route;
 
         current_route = new Route;
+
+        saveRouteAttributes(atts);
+    }
+    else if (qName == "")
+    {
     }
 
     return true;
@@ -68,6 +92,9 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
     {
         routes->addRoute(*current_route);
         route_num++;
+    }
+    else if (qName == "")
+    {
     }
 
     return true;

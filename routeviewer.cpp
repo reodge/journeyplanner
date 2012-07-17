@@ -37,6 +37,6 @@ void RouteViewer::setData(RouteItinerary *itinerary)
 
     for (int i = 0; i < ri->length(); i++)
     {
-        ui->listWidget->addItem(QString::number(i) + "route number");
+        ui->listWidget->addItem(ri->routeString(i));
     }
 }

@@ -13,6 +13,8 @@ private:
     RouteItinerary *routes;
     Route *current_route;
 
+    void saveRouteAttributes(const QXmlAttributes &atts);
+
 public:
     explicit TFLXmlHandler();
 
