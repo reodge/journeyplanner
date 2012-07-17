@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rv(new RouteViewer(this)),
     data(ui, &pos),
     routeData(&data, this),
-    hereRefCount(0)
+    hereRefCount(2) /* Element init will reduce this to 0 in comboIndexChanged */
 {
     ui->setupUi(this);
     setupGeneral();

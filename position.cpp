@@ -12,6 +12,7 @@ Position::Position(QObject *parent) :
     source = QGeoPositionInfoSource::createDefaultSource(this);
     if(source)
     {
+        qDebug("Position: Source found and connected");
         connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)), this, SLOT(positionUpdated(QGeoPositionInfo)));
     }
 }
@@ -22,7 +23,7 @@ Position::~Position()
 
 void Position::positionUpdated(const QGeoPositionInfo &info)
 {
-    qDebug() << "Position Updated:" << info;
+    qDebug() << "Position: " << info;
     if(info.hasAttribute(QGeoPositionInfo::HorizontalAccuracy) &&
        info.attribute(QGeoPositionInfo::HorizontalAccuracy) < 100.0)
     {
