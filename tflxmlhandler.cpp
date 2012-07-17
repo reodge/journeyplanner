@@ -5,7 +5,8 @@ TFLXmlHandler::TFLXmlHandler() :
     QXmlDefaultHandler(),
     new_route(false),
     route_num(1),
-    routes(0)
+    routes(0),
+    current_route(0)
 {
 }
 
