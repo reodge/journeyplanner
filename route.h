@@ -2,19 +2,19 @@
 #define ROUTE_H
 
 #include <QString>
-#include <QHash>
+#include <QTime>
 
 class Route
 {
 private:
-    QHash<QString, long long> atts;
+    QTime publicDuration;
 
 public:
     Route();
 
-    void setAttr(const QString &key, const long long &val);
+    void setDuration(const QString &s);
 
-    long long getAttr(const QString &key);
+    QTime getDuration();
 };
 
 #endif // ROUTE_H

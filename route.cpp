@@ -1,21 +1,17 @@
 #include "route.h"
-#include <assert.h>
 #include <QString>
+#include <QTime>
 
 Route::Route()
 {
 }
 
-void Route::setAttr(const QString &key, const long long &val)
+void Route::setDuration(const QString &s)
 {
-    atts.insert(key, val);
+    publicDuration = QTime::fromString(s, "hh:mm");
 }
 
-long long Route::getAttr(const QString &key)
+QTime Route::getDuration()
 {
-    QList<long long> l = atts.values(key);
-
-    assert(l.count() == 1 && "Multiple values for single attribute");
-
-    return l[0];
+    return publicDuration;
 }

@@ -15,18 +15,7 @@ void TFLXmlHandler::saveRouteAttributes(const QXmlAttributes &atts)
     if (!current_route)
         return;
 
-    bool ok = true;
-
-    for (int i = 0; i < atts.count(); i++)
-    {
-        QString key = atts.qName(i);
-        long long val = atts.value(i).toLongLong(&ok);
-
-        if (!ok)
-            continue;
-
-        current_route->setAttr(key, val);
-    }
+    current_route->setDuration(atts.value("publicDuration"));
 }
 
 bool TFLXmlHandler::startDocument()

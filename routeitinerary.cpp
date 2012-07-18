@@ -1,5 +1,8 @@
 #include "routeitinerary.h"
+#include "route.h"
 #include <assert.h>
+#include <QString>
+#include <QTime>
 
 RouteItinerary::RouteItinerary()
 {
@@ -22,8 +25,8 @@ QString RouteItinerary::routeString(const unsigned n)
 
     QString s("Route ");
     s.append(QString::number(n));
-    s.append(", cTime = ");
-    s.append(QString::number(all_routes[n].getAttr("cTime")));
+    s.append(", duration = ");
+    s.append(all_routes[n].getDuration().toString("hh:mm"));
 
     return s;
 }
