@@ -12,9 +12,11 @@ private:
 public:
     Route();
 
+    QString toString() const;
+
     void setDuration(const QString &s);
 
-    QTime getDuration();
+    QTime getDuration() const;
 };
 
 #endif // ROUTE_H

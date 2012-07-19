@@ -13,8 +13,10 @@ public:
     RouteItinerary();
 
     int length();
+
     void addRoute(const Route &r);
-    QString routeString(const unsigned n);
+
+    const Route& operator[] (const int i);
 };
 
 #endif // ROUTEITINERARY_H

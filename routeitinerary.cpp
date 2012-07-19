@@ -18,15 +18,7 @@ void RouteItinerary::addRoute(const Route &r)
     all_routes.push_back(r);
 }
 
-QString RouteItinerary::routeString(const unsigned n)
+const Route& RouteItinerary::operator[] (const int i)
 {
-    if (n > all_routes.size())
-        return "";
-
-    QString s("Route ");
-    s.append(QString::number(n));
-    s.append(", duration = ");
-    s.append(all_routes[n].getDuration().toString("hh:mm"));
-
-    return s;
+    return all_routes[i];
 }
