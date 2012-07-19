@@ -113,3 +113,16 @@ export (TARGET.CAPABILITY)
 export (LIBS)
 export (QMAKE_EXTRA_TARGETS)
 }
+
+OTHER_FILES += \
+    icon-walk.gif \
+    icon-tube.gif \
+    icon-trams.gif \
+    icon_stair_up.png \
+    icon_stair_down.png \
+    icon-rail.gif \
+    icon_lift.png \
+    icon_esc_up.png \
+    icon_esc_down.png \
+    icon-dlr.gif \
+    icon-buses.gif
