@@ -1,10 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QComboBox>
-#include <QtGui/QSlider>
-#include <QtGui/QDateTimeEdit>
+#include <QtGui>
+#include <QStandardItemModel>
 #include "position.h"
 #include "routedatagen.h"
 #include "routeviewer.h"
@@ -25,7 +23,7 @@ public:
         ScreenOrientationAuto
     };
 
-    explicit MainWindow(QWidget *parent = 0);
+    MainWindow(QStandardItemModel *model, QWidget *parent = 0);
     virtual ~MainWindow();
 
     // Note that this will only have an effect on Symbian and Fremantle.
@@ -42,7 +40,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    RouteViewer *rv;
+    RouteViewer rv;
 
     Position pos;
     RawData data;

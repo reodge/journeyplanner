@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QtCore/QCoreApplication>
+#include <QStandardItemModel>
 #include <QDebug>
 #include "qdatetimeediturl.h"
 #include "qsliderurl.h"
@@ -13,19 +14,20 @@
 #include <QtMaemo5>
 #endif
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QStandardItemModel *model, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    rv(new RouteViewer(this)),
+    rv(this),
     data(ui, &pos),
     routeData(&data, this),
     hereRefCount(2) /* Element init will reduce this to 0 in comboIndexChanged */
 {
     ui->setupUi(this);
+    rv.setModel(model);
     setupGeneral();
 #if defined(Q_WS_MAEMO_5)
     this->setAttribute(Qt::WA_Maemo5StackedWindow);
-    rv->setAttribute(Qt::WA_Maemo5StackedWindow);
+    rv.setAttribute(Qt::WA_Maemo5StackedWindow);
 #endif
 
     connect(&routeData, SIGNAL(dataReady(RouteItinerary*)), this, SLOT(routeDataReady(RouteItinerary*)));
@@ -127,8 +129,7 @@ void MainWindow::routeDataReady(RouteItinerary *itinerary)
 
     qDebug() << "Route data is ready!";
 
-    rv->setData(itinerary);
-    rv->show();
+    rv.show();
 }
 
 /* Shows an error dialog box. Currently only used if both boxes are empty upon clicking Go */

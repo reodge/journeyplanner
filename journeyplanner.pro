@@ -40,7 +40,8 @@ SOURCES += main.cpp mainwindow.cpp \
     route.cpp \
     routeitinerary.cpp \
     routedatagen.cpp \
-    rawdata.cpp
+    rawdata.cpp \
+    routemodel.cpp
 HEADERS += mainwindow.h \
     qdatetimeediturl.h \
     qsliderurl.h \
@@ -51,7 +52,8 @@ HEADERS += mainwindow.h \
     route.h \
     routeitinerary.h \
     routedatagen.h \
-    rawdata.h
+    rawdata.h \
+    routemodel.h
 FORMS += mainwindow.ui \
     routeviewer.ui
 

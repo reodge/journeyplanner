@@ -115,14 +115,14 @@ export (QMAKE_EXTRA_TARGETS)
 }
 
 OTHER_FILES += \
-    icon-walk.gif \
-    icon-tube.gif \
-    icon-trams.gif \
-    icon_stair_up.png \
-    icon_stair_down.png \
-    icon-rail.gif \
-    icon_lift.png \
-    icon_esc_up.png \
-    icon_esc_down.png \
-    icon-dlr.gif \
-    icon-buses.gif
+    icons/bus.gif \
+    icons/walk.gif \
+    icons/tube.gif \
+    icons/tram.gif \
+    icons/stair_up.png \
+    icons/stair_down.png \
+    icons/rail.gif \
+    icons/lift.png \
+    icons/esc_up.png \
+    icons/esc_down.png \
+    icons/dlr.gif

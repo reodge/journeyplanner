@@ -9,11 +9,6 @@ RouteViewer::RouteViewer(QWidget *parent) :
     ri(0)
 {
     ui->setupUi(this);
-
-    for (int i = 0; i < 20; i++)
-    {
-        ui->listWidget->addItem(QString::number(i) + "route number");
-    }
 }
 
 RouteViewer::~RouteViewer()
@@ -26,17 +21,7 @@ void RouteViewer::itemClicked(QListWidgetItem *item)
     qDebug() << item->text();
 }
 
-void RouteViewer::setData(RouteItinerary *itinerary)
+void RouteViewer::setModel(QAbstractItemModel *model)
 {
-    if (ri)
-        delete ri;
-
-    ui->listWidget->clear();
-
-    ri = itinerary;
-
-    for (int i = 0; i < ri->length(); i++)
-    {
-        ui->listWidget->addItem((*ri)[i].toString());
-    }
+    ui->treeView->setModel(model);
 }
