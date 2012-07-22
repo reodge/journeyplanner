@@ -9,6 +9,8 @@ class RouteModel : public QStandardItemModel
 public:
     explicit RouteModel(QObject *parent = 0);
 
+    void getRoutes();
+
 signals:
 
 public slots:

@@ -11,3 +11,7 @@ RouteModel::RouteModel(QObject *parent) :
     /* Add an item for the route data */
     this->appendRow(new QStandardItem());
 }
+
+void RouteModel::getRoutes()
+{
+}

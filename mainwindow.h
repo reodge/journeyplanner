@@ -7,6 +7,7 @@
 #include "routeviewer.h"
 #include "routeitinerary.h"
 #include "rawdata.h"
+#include "routemodel.h"
 
 namespace Ui {
     class MainWindow;
@@ -30,7 +31,7 @@ public:
 
     void showExpanded();
 
-    void setModel(QStandardItemModel *model);
+    void setModel(RouteModel *model);
 
 public slots:
     void findRoute();

@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
-#include <QStandardItemModel>
+#include "routemodel.h"
 #include "routeitinerary.h"
 
 namespace Ui {
@@ -21,10 +21,14 @@ public:
     explicit RouteViewer(QWidget *parent = 0);
     ~RouteViewer();
 
-    void setModel(QStandardItemModel *model);
-    
+    void setModel(RouteModel *model);
+
+protected:
+    virtual void showEvent(QShowEvent *event);
+
 private:
     Ui::RouteViewer *ui;
+    RouteModel *model;
     RouteItinerary *ri;
 };
 

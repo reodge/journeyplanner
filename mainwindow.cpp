@@ -10,6 +10,7 @@
 #include "position.h"
 #include "routedatagen.h"
 #include "routeviewer.h"
+#include "routemodel.h"
 
 #if defined(Q_WS_MAEMO_5)
 #include <QtMaemo5>
@@ -80,7 +81,7 @@ void MainWindow::showExpanded()
 #endif
 }
 
-void MainWindow::setModel(QStandardItemModel *model)
+void MainWindow::setModel(RouteModel *model)
 {
     mapper.setModel(model);
     mapper.setOrientation(Qt::Vertical);
