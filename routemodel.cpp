@@ -11,7 +11,9 @@ RouteModel::RouteModel(QObject *parent) :
     this->appendRow(item);
 
     /* Add an item for the route data */
-    this->appendRow(new QStandardItem("Looking for data ... "));
+    item = new QStandardItem();
+    this->appendRow(item);
+    item->appendRow(new QStandardItem("Looking for data ... "));
 }
 
 void RouteModel::findPositionHint(bool state)

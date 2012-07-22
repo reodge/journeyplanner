@@ -27,4 +27,10 @@ void RouteViewer::setModel(RouteModel *model)
 {
     this->model = model;
     ui->treeView->setModel(model);
+
+    if (!model)
+        return;
+
+    /* Set root view to location of route data in model */
+    ui->treeView->setRootIndex(model->item(1)->index());
 }

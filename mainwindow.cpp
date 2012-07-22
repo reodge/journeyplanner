@@ -87,11 +87,14 @@ void MainWindow::setModel(RouteModel *model)
     /* Save it locally */
     this->model = model;
 
+    if (!model)
+    {
+        mapper.setModel(0);
+        return;
+    }
+
     /* Configure widget mapper */
     mapper.setModel(model);
-
-    if (!model)
-        return;
 
     /* Get model element that points to raw data and use it for mapper */
     QModelIndex index = model->indexFromItem(model->item(0));
