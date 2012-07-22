@@ -2,7 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include <QtCore/QCoreApplication>
-#include <QStandardItemModel>
+#include <QtGui>
+#include <QModelIndex>
 #include <QDebug>
 #include "qdatetimeediturl.h"
 #include "qsliderurl.h"
@@ -17,6 +18,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    mapper(this),
     rv(this),
     data(ui, &pos),
     routeData(&data, this),
@@ -80,6 +82,21 @@ void MainWindow::showExpanded()
 
 void MainWindow::setModel(QStandardItemModel *model)
 {
+    mapper.setModel(model);
+    mapper.setOrientation(Qt::Vertical);
+
+    QModelIndex index = model->indexFromItem(model->item(0));
+    mapper.setRootIndex(index);
+    mapper.setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
+
+    /* Set widgets to use this model */
+    mapper.addMapping(ui->comboFrom, 0, "currentIndex");
+    mapper.addMapping(ui->lineFrom, 1, "text");
+    mapper.addMapping(ui->comboTo, 2, "currentIndex");
+    mapper.addMapping(ui->lineTo, 3, "text");
+    mapper.toFirst();
+    mapper.submit();
+
     rv.setModel(model);
 }
 
@@ -96,7 +113,8 @@ void MainWindow::findRoute()
         return;
     }
 
-    routeData.getData();
+    rv.show();
+    //routeData.getData();
 }
 
 /* Called when an element from combo box "To" is selected */
@@ -125,6 +143,9 @@ void MainWindow::comboIndexChanged(const int index)
         if (this->hereRefCount == 0)
             pos.stopUpdates();
     }
+
+    /* This should work with AutoSubmit, but doesn't for ComboBox, so we do it here */
+    mapper.submit();
 }
 
 void MainWindow::routeDataReady(RouteItinerary *itinerary)

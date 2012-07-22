@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QtGui>
-#include <QStandardItemModel>
 #include "position.h"
 #include "routedatagen.h"
 #include "routeviewer.h"
@@ -42,6 +41,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+    QDataWidgetMapper mapper;
     RouteViewer rv;
 
     Position pos;

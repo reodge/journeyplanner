@@ -20,14 +20,5 @@ int main(int argc, char *argv[])
     /* Point UI at our data */
     mainWindow.setModel(&routeModel);
 
-    /* Add some testing data */
-    QStandardItem *parentItem = routeModel.invisibleRootItem();
-    for (int i = 0; i < 4; ++i)
-    {
-        QStandardItem *item = new QStandardItem(QString("item %0").arg(i));
-        parentItem->appendRow(item);
-        parentItem = item;
-    }
-
     return app.exec();
 }

@@ -1,7 +1,8 @@
+#include <QStandardItemModel>
+#include <QListWidgetItem>
+#include <QDebug>
 #include "routeviewer.h"
 #include "ui_routeviewer.h"
-#include <QDebug>
-#include <QListWidgetItem>
 
 RouteViewer::RouteViewer(QWidget *parent) :
     QMainWindow(parent),
@@ -22,7 +23,7 @@ void RouteViewer::itemClicked(QListWidgetItem *item)
     qDebug() << item->text();
 }
 
-void RouteViewer::setModel(QAbstractItemModel *model)
+void RouteViewer::setModel(QStandardItemModel *model)
 {
     ui->treeView->setModel(model);
 }
