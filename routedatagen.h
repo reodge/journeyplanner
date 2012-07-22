@@ -2,7 +2,6 @@
 #define TFLURLGEN_H
 
 #include "tflxmlhandler.h"
-#include "rawdata.h"
 #include "routeitinerary.h"
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -13,7 +12,7 @@ class RouteDataGen : public QObject
 {
     Q_OBJECT
 public:
-    explicit RouteDataGen(RawData *data, QObject *parent = 0);
+    explicit RouteDataGen(QObject *parent = 0);
     void getData();
     
 signals:
@@ -23,7 +22,6 @@ private slots:
     void downloadReady (QNetworkReply *reply);
 
 private:
-    RawData *data;
     QNetworkAccessManager manager;
     TFLXmlHandler xmlHandler;
     QXmlSimpleReader xmlReader;

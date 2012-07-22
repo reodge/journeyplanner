@@ -7,8 +7,6 @@
 #include <QDebug>
 #include "qdatetimeediturl.h"
 #include "qsliderurl.h"
-#include "position.h"
-#include "routedatagen.h"
 #include "routeviewer.h"
 #include "routemodel.h"
 
@@ -21,18 +19,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     mapper(this),
     rv(this),
-    data(ui, &pos),
-    routeData(&data, this),
-    hereRefCount(2) /* Element init will reduce this to 0 in comboIndexChanged */
+    posRefCount(2) /* It will be decremented twice on initialisation of UI */
 {
+    /* Initialise UI elements */
     ui->setupUi(this);
     setupGeneral();
+
+    /* Set some global config for widget mapper */
+    mapper.setOrientation(Qt::Vertical);
+    mapper.setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
+
+    /* Ensure our windows have the cool back arrow on Maemo */
 #if defined(Q_WS_MAEMO_5)
     this->setAttribute(Qt::WA_Maemo5StackedWindow);
     rv.setAttribute(Qt::WA_Maemo5StackedWindow);
 #endif
-
-    connect(&routeData, SIGNAL(dataReady(RouteItinerary*)), this, SLOT(routeDataReady(RouteItinerary*)));
 }
 
 MainWindow::~MainWindow()
@@ -83,19 +84,27 @@ void MainWindow::showExpanded()
 
 void MainWindow::setModel(RouteModel *model)
 {
-    mapper.setModel(model);
-    mapper.setOrientation(Qt::Vertical);
+    /* Save it locally */
+    this->model = model;
 
+    /* Configure widget mapper */
+    mapper.setModel(model);
+
+    if (!model)
+        return;
+
+    /* Get model element that points to raw data and use it for mapper */
     QModelIndex index = model->indexFromItem(model->item(0));
     mapper.setRootIndex(index);
-    mapper.setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 
     /* Set widgets to use this model */
-    mapper.addMapping(ui->comboFrom, 0, "currentIndex");
-    mapper.addMapping(ui->lineFrom, 1, "text");
-    mapper.addMapping(ui->comboTo, 2, "currentIndex");
-    mapper.addMapping(ui->lineTo, 3, "text");
+    mapper.addMapping(ui->comboFrom, RouteModel::LAYOUT_FROM_TYPE, "currentIndex");
+    mapper.addMapping(ui->lineFrom, RouteModel::LAYOUT_FROM_NAME, "text");
+    mapper.addMapping(ui->comboTo, RouteModel::LAYOUT_TO_TYPE, "currentIndex");
+    mapper.addMapping(ui->lineTo, RouteModel::LAYOUT_TO_NAME, "text");
     mapper.toFirst();
+
+    /* Ensure initial data is set up in the model */
     mapper.submit();
 
     rv.setModel(model);
@@ -106,6 +115,7 @@ void MainWindow::setModel(RouteModel *model)
    checks for empty from or to boxes and uses the current position if so. */
 void MainWindow::findRoute()
 {
+    /* Validate form */
     if ((ui->lineFrom->text().isEmpty() && ui->lineFrom->isEnabled()) ||
         (ui->lineTo->text().isEmpty() && ui->lineTo->isEnabled()))
     {
@@ -115,7 +125,6 @@ void MainWindow::findRoute()
     }
 
     rv.show();
-    //routeData.getData();
 }
 
 /* Called when an element from combo box "To" is selected */
@@ -134,28 +143,19 @@ void MainWindow::comboIndexChanged(const int index)
 {
     if (index == 4)
     {
-        this->hereRefCount++;
-        if (this->hereRefCount == 1)
-            pos.updatePosition();
+        posRefCount++;
+        if ((posRefCount == 1) && model)
+            model->findPositionHint(true);
     }
     else
     {
-        this->hereRefCount--;
-        if (this->hereRefCount == 0)
-            pos.stopUpdates();
+        posRefCount--;
+        if ((posRefCount == 0) && model)
+            model->findPositionHint(false);
     }
 
     /* This should work with AutoSubmit, but doesn't for ComboBox, so we do it here */
     mapper.submit();
-}
-
-void MainWindow::routeDataReady(RouteItinerary *itinerary)
-{
-    Q_UNUSED(itinerary);
-
-    qDebug() << "Route data is ready!";
-
-    rv.show();
 }
 
 /* Shows an error dialog box. Currently only used if both boxes are empty upon clicking Go */

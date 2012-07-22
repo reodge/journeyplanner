@@ -2,11 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QtGui>
-#include "position.h"
-#include "routedatagen.h"
 #include "routeviewer.h"
 #include "routeitinerary.h"
-#include "rawdata.h"
 #include "routemodel.h"
 
 namespace Ui {
@@ -38,17 +35,13 @@ public slots:
     void indexActivatedTo(const int index);
     void indexActivatedFrom(const int index);
     void comboIndexChanged(const int index);
-    void routeDataReady(RouteItinerary *itinerary);
 
 private:
     Ui::MainWindow *ui;
+    RouteModel *model;
     QDataWidgetMapper mapper;
     RouteViewer rv;
-
-    Position pos;
-    RawData data;
-    RouteDataGen routeData;
-    int hereRefCount;
+    int posRefCount;
 
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);

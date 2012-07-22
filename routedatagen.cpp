@@ -1,6 +1,5 @@
 #include "routedatagen.h"
 #include "routeitinerary.h"
-#include "rawdata.h"
 #include <QUrl>
 #include <QDesktopServices>
 #include <QNetworkRequest>
@@ -11,10 +10,9 @@
 #include <QtMaemo5>
 #endif
 
-RouteDataGen::RouteDataGen(RawData *data, QObject *parent) :
+RouteDataGen::RouteDataGen(QObject *parent) :
     QObject(parent)
 {
-    this->data = data;
     xmlReader.setContentHandler(&xmlHandler);
     connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
 }
@@ -72,13 +70,13 @@ void RouteDataGen::getData()
     //url.append(this->toString("m"));
 
     url.append("&type_origin=");
-    url.append(data->getOriginType());
-    url.append("&type_destination=");
-    url.append(data->getDestType());
-    url.append("&name_origin=");
-    url.append(data->getOrigin());
-    url.append("&name_destination=");
-    url.append(data->getDest());
+    //url.append(data->getOriginType());
+    //url.append("&type_destination=");
+    //url.append(data->getDestType());
+    //url.append("&name_origin=");
+    //url.append(data->getOrigin());
+    //url.append("&name_destination=");
+    //url.append(data->getDest());
 
     qDebug() << "Opening URL: " << url << endl;
 

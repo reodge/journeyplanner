@@ -1,4 +1,4 @@
-#include <QListWidgetItem>
+#include <QtGui>
 #include <QDebug>
 #include "routeviewer.h"
 #include "routemodel.h"
@@ -6,8 +6,7 @@
 
 RouteViewer::RouteViewer(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::RouteViewer),
-    ri(0)
+    ui(new Ui::RouteViewer)
 {
     ui->setupUi(this);
     ui->treeView->header()->hide();
@@ -21,13 +20,7 @@ RouteViewer::~RouteViewer()
 void RouteViewer::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
-
     model->getRoutes();
-}
-
-void RouteViewer::itemClicked(QListWidgetItem *item)
-{
-    qDebug() << item->text();
 }
 
 void RouteViewer::setModel(RouteModel *model)
