@@ -9,6 +9,7 @@ RouteViewer::RouteViewer(QWidget *parent) :
     ri(0)
 {
     ui->setupUi(this);
+    ui->treeView->header()->hide();
 }
 
 RouteViewer::~RouteViewer()

@@ -23,13 +23,15 @@ public:
         ScreenOrientationAuto
     };
 
-    MainWindow(QStandardItemModel *model, QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
 
     // Note that this will only have an effect on Symbian and Fremantle.
     void setOrientation(ScreenOrientation orientation);
 
     void showExpanded();
+
+    void setModel(QStandardItemModel *model);
 
 public slots:
     void findRoute();

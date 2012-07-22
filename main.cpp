@@ -11,11 +11,14 @@ int main(int argc, char *argv[])
     RouteModel routeModel;
 
     /* Holds our UI */
-    MainWindow mainWindow(&routeModel);
+    MainWindow mainWindow;
 
     /* Arrange UI how we want it */
     mainWindow.setOrientation(MainWindow::ScreenOrientationLockLandscape);
     mainWindow.showExpanded();
+
+    /* Point UI at our data */
+    mainWindow.setModel(&routeModel);
 
     /* Add some testing data */
     QStandardItem *parentItem = routeModel.invisibleRootItem();

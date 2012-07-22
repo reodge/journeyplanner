@@ -14,7 +14,7 @@
 #include <QtMaemo5>
 #endif
 
-MainWindow::MainWindow(QStandardItemModel *model, QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     rv(this),
@@ -23,7 +23,6 @@ MainWindow::MainWindow(QStandardItemModel *model, QWidget *parent) :
     hereRefCount(2) /* Element init will reduce this to 0 in comboIndexChanged */
 {
     ui->setupUi(this);
-    rv.setModel(model);
     setupGeneral();
 #if defined(Q_WS_MAEMO_5)
     this->setAttribute(Qt::WA_Maemo5StackedWindow);
@@ -77,6 +76,11 @@ void MainWindow::showExpanded()
 #else
     show();
 #endif
+}
+
+void MainWindow::setModel(QStandardItemModel *model)
+{
+    rv.setModel(model);
 }
 
 /* Checks for data needed and passes off to appropriate function to eventually
