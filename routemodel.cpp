@@ -26,4 +26,7 @@ void RouteModel::findPositionHint(bool state)
 
 void RouteModel::getRoutes()
 {
+    data.setModel(this);
+    data.setRootIndex(this->item(1)->index());
+    data.getData();
 }

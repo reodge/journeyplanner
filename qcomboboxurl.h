@@ -9,8 +9,6 @@ class QComboBoxUrl : public QComboBox
 public:
     explicit QComboBoxUrl(QWidget *parent = 0);
 
-    QString toString() const;
-
 signals:
 
 public slots:

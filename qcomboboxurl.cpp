@@ -40,23 +40,3 @@ void QComboBoxUrl::indexActivated(const int index)
 {
         iLastValueBeforeAutoPostcode = index;
 }
-
-/* Turns current index from this combo box into a string to be added to a url. */
-QString QComboBoxUrl::toString() const
-{
-    switch(this->currentIndex())
-    {
-    case 0:
-        return QString("stop");
-    case 1:
-        return QString("locator");
-    case 2:
-        return QString("address");
-    case 3:
-        return QString("poi");
-    case 4:
-        /* type to use for position data */
-    default:
-        return QString("");
-    }
-}
