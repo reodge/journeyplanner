@@ -17,8 +17,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mapper(this),
     rv(this),
+    mapper(this),
+	model(0),
     posRefCount(2) /* It will be decremented twice on initialisation of UI */
 {
     /* Initialise UI elements */

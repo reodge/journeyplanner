@@ -38,9 +38,9 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    RouteModel *model;
-    QDataWidgetMapper mapper;
     RouteViewer rv;
+    QDataWidgetMapper mapper;
+    RouteModel *model;
     int posRefCount;
 
     QString comboIndexToUrl(QComboBox *c);
