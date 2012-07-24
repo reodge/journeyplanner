@@ -1,5 +1,4 @@
 #include "routedatagen.h"
-#include "routeitinerary.h"
 #include "routemodel.h"
 #include <QUrl>
 #include <QDesktopServices>
@@ -13,7 +12,8 @@
 
 RouteDataGen::RouteDataGen(QObject *parent) :
     QObject(parent),
-    model(0)
+    model(0),
+    root(0)
 {
     xmlReader.setContentHandler(&xmlHandler);
     connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
@@ -39,18 +39,6 @@ void RouteDataGen::downloadReady (QNetworkReply *reply)
     {
         qDebug() << "Parsing failed" << endl;
     }
-    else
-    {
-        /* We need to figure out how to clean this up ... we currently rely on the
-           dataReady signal getting connected to a slot which deletes ri.
-         */
-        RouteItinerary *ri;
-
-        if (xmlHandler.getRoutes(ri))
-            emit dataReady(ri);
-        else
-            qDebug() << "Parsing succeeded, but no routes." << endl;
-    }
 
     reply->deleteLater();
 }
@@ -58,12 +46,16 @@ void RouteDataGen::downloadReady (QNetworkReply *reply)
 void RouteDataGen::setModel(QStandardItemModel *model)
 {
     this->model = model;
-    root = QModelIndex();
+    root = model->invisibleRootItem();
+
+    xmlHandler.setModel(model);
+    xmlHandler.setRootItem(root);
 }
 
-void RouteDataGen::setRootIndex(const QModelIndex &index)
+void RouteDataGen::setRootItem(QStandardItem *item)
 {
-    root = index;
+    root = item;
+    xmlHandler.setRootItem(root);
 }
 
 /* Puts together the data and opens TFL website */
@@ -94,10 +86,8 @@ void RouteDataGen::getData()
     qDebug() << "Opening URL: " << url << endl;
 
     QStandardItem *item = new QStandardItem("Loading data ...");
-    QStandardItem *rootItem = model->itemFromIndex(root);
-
-    rootItem->removeRows(0, rootItem->rowCount());
-    rootItem->appendRow(item);
+    root->removeRows(0, root->rowCount());
+    root->appendRow(item);
 
     manager.get(QNetworkRequest(QUrl(url, QUrl::TolerantMode)));
 }

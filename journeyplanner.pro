@@ -37,8 +37,6 @@ SOURCES += main.cpp mainwindow.cpp \
     position.cpp \
     tflxmlhandler.cpp \
     routeviewer.cpp \
-    route.cpp \
-    routeitinerary.cpp \
     routedatagen.cpp \
     routemodel.cpp
 HEADERS += mainwindow.h \
@@ -48,8 +46,6 @@ HEADERS += mainwindow.h \
     position.h \
     tflxmlhandler.h \
     routeviewer.h \
-    route.h \
-    routeitinerary.h \
     routedatagen.h \
     routemodel.h
 FORMS += mainwindow.ui \

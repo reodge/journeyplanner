@@ -8,7 +8,6 @@
 #include <QNetworkReply>
 #include <QXmlSimpleReader>
 #include "tflxmlhandler.h"
-#include "routeitinerary.h"
 
 class RouteDataGen : public QObject
 {
@@ -17,10 +16,7 @@ public:
     explicit RouteDataGen(QObject *parent = 0);
     void getData();
     void setModel(QStandardItemModel *model);
-    void setRootIndex(const QModelIndex &index);
-
-signals:
-    void dataReady(RouteItinerary *itinerary);
+    void setRootItem(QStandardItem *item);
     
 private slots:
     void downloadReady (QNetworkReply *reply);
@@ -30,7 +26,7 @@ private:
     TFLXmlHandler xmlHandler;
     QXmlSimpleReader xmlReader;
     QStandardItemModel *model;
-    QPersistentModelIndex root;
+    QStandardItem *root;
 
     QString getBaseTFLURL();
     QString typeIndexToString(const int i) const;

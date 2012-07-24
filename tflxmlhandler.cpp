@@ -3,29 +3,29 @@
 
 TFLXmlHandler::TFLXmlHandler() :
     QXmlDefaultHandler(),
-    new_route(false),
-    route_num(1),
-    routes(0),
-    current_route(0)
+    model(0),
+    root(0)
 {
 }
 
-void TFLXmlHandler::saveRouteAttributes(const QXmlAttributes &atts)
+void TFLXmlHandler::setModel(QStandardItemModel *model)
 {
-    if (!current_route)
-        return;
+    this->model = model;
+    root = model->invisibleRootItem();
+}
 
-    current_route->setDuration(atts.value("publicDuration"));
+void TFLXmlHandler::setRootItem(QStandardItem *item)
+{
+    root = item;
 }
 
 bool TFLXmlHandler::startDocument()
 {
     qDebug() << ("Parsing started");
 
-    /* TODO decide if we want to delete routes here, it is currently
-       passed out as a pointer to other classes, so may not be safe.
-     */
-    routes = new RouteItinerary;
+    root->removeRow(root->rowCount() - 1);
+    loc = root->child(root->rowCount() - 1);
+    root->appendRow(new QStandardItem("Parsing started!"));
 
     return true;
 }
@@ -48,13 +48,7 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
 
     if (qName == "itdRoute")
     {
-        qDebug() << "Route " << route_num;
-        if (current_route)
-            delete current_route;
-
-        current_route = new Route;
-
-        saveRouteAttributes(atts);
+        qDebug() << "Route found";
     }
     else if (qName == "")
     {
@@ -79,8 +73,6 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
 
     if (qName == "itdRoute")
     {
-        routes->addRoute(*current_route);
-        route_num++;
     }
     else if (qName == "")
     {
@@ -95,16 +87,4 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
                 " Line: " << exception.lineNumber() << ", Column: " << exception.columnNumber() << endl;
 
     return false;
-}
-
-/* Returns true if a route itinerary is available and sets itinerary to point to it.
-   itinerary must be freeds by the called.
-   Returns false if no routes are available. */
-bool TFLXmlHandler::getRoutes(RouteItinerary *&itinerary)
-{
-    if (!routes)
-        return false;
-
-    itinerary = routes;
-    return true;
 }

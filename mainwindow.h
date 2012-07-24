@@ -3,7 +3,6 @@
 
 #include <QtGui>
 #include "routeviewer.h"
-#include "routeitinerary.h"
 #include "routemodel.h"
 
 namespace Ui {

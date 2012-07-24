@@ -1,22 +1,21 @@
 #ifndef TFLXMLHANDLER_H
 #define TFLXMLHANDLER_H
 
-#include "route.h"
-#include "routeitinerary.h"
 #include <QXmlDefaultHandler>
+#include <QStandardItemModel>
 
 class TFLXmlHandler : public QXmlDefaultHandler
 {
 private:
-    bool new_route;
-    int route_num;
-    RouteItinerary *routes;
-    Route *current_route;
-
-    void saveRouteAttributes(const QXmlAttributes &atts);
+    QStandardItemModel *model;
+    QStandardItem *root;
+    QStandardItem *loc;
 
 public:
     explicit TFLXmlHandler();
+
+    void setModel(QStandardItemModel *model);
+    void setRootItem(QStandardItem *item);
 
     bool startDocument();
 
@@ -34,8 +33,6 @@ public:
                     const QString &qName);
 
     bool fatalError(const QXmlParseException &exception);
-
-    bool getRoutes(RouteItinerary *&itinerary);
 };
 
 #endif // TFLXMLHANDLER_H
