@@ -93,6 +93,12 @@ void RouteDataGen::getData()
 
     qDebug() << "Opening URL: " << url << endl;
 
+    QStandardItem *item = new QStandardItem("Loading data ...");
+    QStandardItem *rootItem = model->itemFromIndex(root);
+
+    rootItem->removeRows(0, rootItem->rowCount());
+    rootItem->appendRow(item);
+
     manager.get(QNetworkRequest(QUrl(url, QUrl::TolerantMode)));
 }
 
