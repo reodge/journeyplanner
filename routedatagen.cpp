@@ -75,9 +75,9 @@ void RouteDataGen::getData()
     //url.append(this->toString("m"));
 
     url.append("&type_origin=");
-    url.append(typeIndexToString(model->item(0)->child(RouteModel::LAYOUT_FROM_TYPE)->data().toInt()));
+    url.append(typeIndexToString(model->item(0)->child(RouteModel::LAYOUT_FROM_TYPE)->text().toInt()));
     url.append("&type_destination=");
-    url.append(typeIndexToString(model->item(0)->child(RouteModel::LAYOUT_TO_TYPE)->data().toInt()));
+    url.append(typeIndexToString(model->item(0)->child(RouteModel::LAYOUT_TO_TYPE)->text().toInt()));
     url.append("&name_origin=");
     url.append(model->item(0)->child(RouteModel::LAYOUT_FROM_NAME)->text());
     url.append("&name_destination=");

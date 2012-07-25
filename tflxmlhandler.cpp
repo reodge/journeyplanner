@@ -24,8 +24,8 @@ bool TFLXmlHandler::startDocument()
     qDebug() << ("Parsing started");
 
     root->removeRow(root->rowCount() - 1);
-    loc = root->child(root->rowCount() - 1);
-    root->appendRow(new QStandardItem("Parsing started!"));
+    root->appendRow(new QStandardItem("Search earlier ..."));
+    loc = root;
 
     return true;
 }
@@ -33,6 +33,8 @@ bool TFLXmlHandler::startDocument()
 bool TFLXmlHandler::endDocument()
 {
     qDebug("Parsing ended");
+
+    root->appendRow(new QStandardItem("Search later ..."));
 
     return true;
 }
@@ -48,7 +50,9 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
 
     if (qName == "itdRoute")
     {
-        qDebug() << "Route found";
+        QStandardItem *item = new QStandardItem("New Route");
+        loc->appendRow(item);
+        loc = item;
     }
     else if (qName == "")
     {
@@ -73,6 +77,7 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
 
     if (qName == "itdRoute")
     {
+        loc = loc->parent();
     }
     else if (qName == "")
     {
