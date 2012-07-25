@@ -24,7 +24,9 @@ bool TFLXmlHandler::startDocument()
     qDebug() << ("Parsing started");
 
     root->removeRow(root->rowCount() - 1);
-    root->appendRow(new QStandardItem("Search earlier ..."));
+    QStandardItem *item = new QStandardItem("Search earlier ...");
+    item->setFlags(Qt::ItemIsEnabled);
+    root->appendRow(item);
     loc = root;
 
     return true;
@@ -34,7 +36,9 @@ bool TFLXmlHandler::endDocument()
 {
     qDebug("Parsing ended");
 
-    root->appendRow(new QStandardItem("Search later ..."));
+    QStandardItem *item = new QStandardItem("Search later ...");
+    item->setFlags(Qt::ItemIsEnabled);
+    root->appendRow(item);
 
     return true;
 }
@@ -51,6 +55,7 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
     if (qName == "itdRoute")
     {
         QStandardItem *item = new QStandardItem("New Route");
+        item->setFlags(Qt::ItemIsEnabled);
         loc->appendRow(item);
         loc = item;
     }

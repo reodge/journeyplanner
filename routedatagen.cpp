@@ -86,6 +86,7 @@ void RouteDataGen::getData()
     qDebug() << "Opening URL: " << url << endl;
 
     QStandardItem *item = new QStandardItem("Loading data ...");
+    item->setFlags(Qt::ItemIsEnabled);
     root->removeRows(0, root->rowCount());
     root->appendRow(item);
 
