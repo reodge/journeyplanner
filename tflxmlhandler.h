@@ -10,6 +10,12 @@ private:
     QStandardItemModel *model;
     QStandardItem *root;
     QStandardItem *loc;
+    QMultiHash<QString, QString> tagAssociations;
+    QList<QString> validTags;
+    QString ignoreTag;
+
+    void initialiseTagAssociations();
+    void initialiseValidTags();
 
 public:
     explicit TFLXmlHandler();

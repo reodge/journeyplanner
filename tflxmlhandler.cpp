@@ -1,11 +1,39 @@
 #include "tflxmlhandler.h"
 #include <QDebug>
 
+Q_DECLARE_METATYPE(QXmlAttributes);
+
 TFLXmlHandler::TFLXmlHandler() :
     QXmlDefaultHandler(),
     model(0),
-    root(0)
+    root(0),
+    loc(0)
 {
+    initialiseValidTags();
+    initialiseTagAssociations();
+}
+
+void TFLXmlHandler::initialiseValidTags()
+{
+    validTags.clear();
+    validTags.append("itdRequest");
+}
+
+/* Set up which tags can lead to other tags */
+void TFLXmlHandler::initialiseTagAssociations()
+{
+    tagAssociations.clear();
+    tagAssociations.insert("itdRequest", "itdTripRequest");
+    tagAssociations.insert("itdTripRequest", "itdItinerary");
+    tagAssociations.insert("itdItinerary", "itdRouteList");
+    tagAssociations.insert("itdRouteList", "itdRoute");
+    tagAssociations.insert("itdRoute", "itdPartialRouteList");
+    tagAssociations.insert("itdPartialRouteList", "itdPartialRoute");
+    tagAssociations.insert("itdPartialRoute", "itdPoint");
+    tagAssociations.insert("itdPartialRoute", "itdMeansOfTransport");
+    tagAssociations.insert("itdPoint", "itdDateTime");
+    tagAssociations.insert("itdDateTime", "itdDate");
+    tagAssociations.insert("itdDateTime", "itdTime");
 }
 
 void TFLXmlHandler::setModel(QStandardItemModel *model)
@@ -28,6 +56,8 @@ bool TFLXmlHandler::startDocument()
     item->setFlags(Qt::ItemIsEnabled);
     root->appendRow(item);
     loc = root;
+
+    ignoreTag.clear();
 
     return true;
 }
@@ -52,15 +82,29 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
     Q_UNUSED (localName);
     Q_UNUSED (atts);
 
-    if (qName == "itdRoute")
+    if (!ignoreTag.isEmpty())
     {
-        QStandardItem *item = new QStandardItem("New Route");
+        return true;
+    }
+
+    QStandardItem *item = 0;
+
+    if (validTags.contains(qName))
+    {
+        item = new QStandardItem(qName);
+        validTags = tagAssociations.values(qName);
+    }
+    else
+    {
+        ignoreTag = qName;
+    }
+
+    if (item)
+    {
+        item->setData(QVariant::fromValue<QXmlAttributes>(atts));
         item->setFlags(Qt::ItemIsEnabled);
         loc->appendRow(item);
         loc = item;
-    }
-    else if (qName == "")
-    {
     }
 
     return true;
@@ -80,12 +124,16 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
     Q_UNUSED (namespaceURI);
     Q_UNUSED (localName);
 
-    if (qName == "itdRoute")
+    if (qName == ignoreTag)
+    {
+        ignoreTag.clear();
+        return true;
+    }
+
+    if (qName == loc->text())
     {
         loc = loc->parent();
-    }
-    else if (qName == "")
-    {
+        validTags = tagAssociations.values(loc->text());
     }
 
     return true;
