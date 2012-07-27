@@ -9,29 +9,28 @@ TFLXmlHandler::TFLXmlHandler() :
     root(0),
     loc(0)
 {
-    initialiseValidTags();
     initialiseTagAssociations();
 }
 
 void TFLXmlHandler::initialiseValidTags()
 {
     validTags.clear();
-    validTags.append("itdRequest");
+    validTags.append("itdRoute");
 }
 
 /* Set up which tags can lead to other tags */
 void TFLXmlHandler::initialiseTagAssociations()
 {
     tagAssociations.clear();
-    tagAssociations.insert("itdRequest", "itdTripRequest");
-    tagAssociations.insert("itdTripRequest", "itdItinerary");
-    tagAssociations.insert("itdItinerary", "itdRouteList");
-    tagAssociations.insert("itdRouteList", "itdRoute");
     tagAssociations.insert("itdRoute", "itdPartialRouteList");
+    tagAssociations.insert("itdRoute", "itdFare");
     tagAssociations.insert("itdPartialRouteList", "itdPartialRoute");
+    tagAssociations.insert("itdFare", "itdTariffzones");
     tagAssociations.insert("itdPartialRoute", "itdPoint");
     tagAssociations.insert("itdPartialRoute", "itdMeansOfTransport");
+    tagAssociations.insert("itdTariffzones", "itdZones");
     tagAssociations.insert("itdPoint", "itdDateTime");
+    tagAssociations.insert("itdZones", "zoneElem");
     tagAssociations.insert("itdDateTime", "itdDate");
     tagAssociations.insert("itdDateTime", "itdTime");
 }
@@ -57,7 +56,9 @@ bool TFLXmlHandler::startDocument()
     root->appendRow(item);
     loc = root;
 
+    initialiseValidTags();
     ignoreTag.clear();
+    started = false;
 
     return true;
 }
@@ -91,10 +92,11 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
 
     if (validTags.contains(qName))
     {
+        started = true;
         item = new QStandardItem(qName);
         validTags = tagAssociations.values(qName);
     }
-    else
+    else if (started)
     {
         ignoreTag = qName;
     }
@@ -133,7 +135,11 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
     if (qName == loc->text())
     {
         loc = loc->parent();
-        validTags = tagAssociations.values(loc->text());
+
+        if (loc == root)
+            initialiseValidTags();
+        else
+            validTags = tagAssociations.values(loc->text());
     }
 
     return true;

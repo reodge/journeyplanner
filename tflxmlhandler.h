@@ -13,6 +13,7 @@ private:
     QMultiHash<QString, QString> tagAssociations;
     QList<QString> validTags;
     QString ignoreTag;
+    bool started;
 
     void initialiseTagAssociations();
     void initialiseValidTags();
