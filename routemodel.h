@@ -25,6 +25,7 @@ public:
     void getRoutes();
 
 signals:
+    void dataFinished();
 
 public slots:
     /* A hint to the model to either start looking for position early, or stop looking to save power.

@@ -18,12 +18,17 @@ public:
 
     void setModel(RouteModel *model);
 
+public slots:
+    void dataFinished();
+
 protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
     Ui::RouteViewer *ui;
     RouteModel *model;
+
+    void setBusyIndicator(bool busy);
 };
 
 #endif // ROUTEVIEWER_H

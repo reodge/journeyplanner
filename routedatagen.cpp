@@ -21,6 +21,8 @@ RouteDataGen::RouteDataGen(QObject *parent) :
 
 void RouteDataGen::downloadReady (QNetworkReply *reply)
 {
+    emit dataFinished();
+
     if (reply->error() != QNetworkReply::NoError)
     {
         QString errorString(reply->errorString());

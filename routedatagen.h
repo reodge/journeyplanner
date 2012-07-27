@@ -17,7 +17,10 @@ public:
     void getData();
     void setModel(QStandardItemModel *model);
     void setRootItem(QStandardItem *item);
-    
+
+signals:
+    void dataFinished();
+
 private slots:
     void downloadReady (QNetworkReply *reply);
 
