@@ -12,6 +12,10 @@ TFLXmlHandler::TFLXmlHandler() :
     initialiseTagAssociations();
 }
 
+void TFLXmlHandler::setDecorations()
+{
+}
+
 void TFLXmlHandler::initialiseValidTags()
 {
     validTags.clear();
@@ -68,6 +72,8 @@ bool TFLXmlHandler::endDocument()
 
     QStandardItem *item = new QStandardItem("Search later ...");
     root->appendRow(item);
+
+    setDecorations();
 
     return true;
 }

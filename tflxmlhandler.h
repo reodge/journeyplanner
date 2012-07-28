@@ -15,6 +15,7 @@ private:
     QString ignoreTag;
     bool started;
 
+    void setDecorations();
     void initialiseTagAssociations();
     void initialiseValidTags();
 

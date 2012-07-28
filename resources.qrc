@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="bus">icons/bus.gif</file>
+        <file alias="dlr">icons/dlr.gif</file>
+        <file alias="esc_down">icons/esc_down.png</file>
+        <file alias="esc_up">icons/esc_up.png</file>
+        <file alias="lift">icons/lift.png</file>
+        <file alias="rail">icons/rail.gif</file>
+        <file alias="stair_down">icons/stair_down.png</file>
+        <file alias="stair_up">icons/stair_up.png</file>
+        <file alias="tram">icons/tram.gif</file>
+        <file alias="tube">icons/tube.gif</file>
+        <file alias="walk">icons/walk.gif</file>
+    </qresource>
+</RCC>
