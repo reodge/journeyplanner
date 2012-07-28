@@ -33,6 +33,10 @@ private:
     RouteModel *model;
 
     void setBusyIndicator(bool busy);
+
+private slots:
+    void handleItemClicked(const QModelIndex &index);
+    void handleItemExpanded(const QModelIndex &index);
 };
 
 #endif // ROUTEVIEWER_H
