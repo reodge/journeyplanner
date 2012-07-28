@@ -13,7 +13,8 @@
 RouteDataGen::RouteDataGen(QObject *parent) :
     QObject(parent),
     model(0),
-    root(0)
+    root(0),
+    currentNetworkRequest(0)
 {
     xmlReader.setContentHandler(&xmlHandler);
     connect(&(this->manager), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadReady(QNetworkReply*)));
@@ -21,6 +22,7 @@ RouteDataGen::RouteDataGen(QObject *parent) :
 
 void RouteDataGen::downloadReady (QNetworkReply *reply)
 {
+    currentNetworkRequest = 0;
     emit dataFinished();
 
     if (reply->error() != QNetworkReply::NoError)
@@ -60,6 +62,14 @@ void RouteDataGen::setRootItem(QStandardItem *item)
     xmlHandler.setRootItem(root);
 }
 
+void RouteDataGen::cancelData()
+{
+    if (currentNetworkRequest)
+        currentNetworkRequest->abort();
+
+    currentNetworkRequest = 0;
+}
+
 /* Puts together the data and opens TFL website */
 void RouteDataGen::getData()
 {
@@ -92,7 +102,7 @@ void RouteDataGen::getData()
     root->removeRows(0, root->rowCount());
     root->appendRow(item);
 
-    manager.get(QNetworkRequest(QUrl(url, QUrl::TolerantMode)));
+    currentNetworkRequest = manager.get(QNetworkRequest(QUrl(url, QUrl::TolerantMode)));
 }
 
 QString RouteDataGen::typeIndexToString(const int i) const

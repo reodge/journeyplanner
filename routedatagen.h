@@ -17,6 +17,7 @@ public:
     void getData();
     void setModel(QStandardItemModel *model);
     void setRootItem(QStandardItem *item);
+    void cancelData();
 
 signals:
     void dataFinished();
@@ -30,6 +31,7 @@ private:
     QXmlSimpleReader xmlReader;
     QStandardItemModel *model;
     QStandardItem *root;
+    QNetworkReply *currentNetworkRequest;
 
     QString getBaseTFLURL();
     QString typeIndexToString(const int i) const;

@@ -32,3 +32,8 @@ void RouteModel::getRoutes()
     data.setRootItem(this->item(1));
     data.getData();
 }
+
+void RouteModel::cancelRoutes()
+{
+    data.cancelData();
+}

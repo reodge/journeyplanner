@@ -23,6 +23,7 @@ public:
     explicit RouteModel(QObject *parent = 0);
 
     void getRoutes();
+    void cancelRoutes();
 
 signals:
     void dataFinished();

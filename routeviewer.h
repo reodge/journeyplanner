@@ -19,9 +19,13 @@ public:
     void setModel(RouteModel *model);
 
 public slots:
+    void handleDataFinished();
+
+signals:
     void dataFinished();
 
 protected:
+    virtual void hideEvent(QHideEvent *event);
     virtual void showEvent(QShowEvent *event);
 
 private:
