@@ -10,10 +10,13 @@ RouteTreeView::RouteTreeView(QWidget *parent) :
 
 void RouteTreeView::handleClicked(const QModelIndex &index)
 {
-    if (isExpanded(index))
-        collapse(index);
-    else
-        expand(index);
+    if (index.parent() == index.model()->index(1, 0))
+    {
+        if (isExpanded(index))
+            collapse(index);
+        else
+            expand(index);
+    }
 }
 
 void RouteTreeView::handleExpanded(const QModelIndex &index)
