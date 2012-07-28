@@ -9,9 +9,6 @@ RouteViewer::RouteViewer(QWidget *parent) :
     ui(new Ui::RouteViewer)
 {
     ui->setupUi(this);
-
-    /* Make single click expand the item */
-    connect(ui->treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(handleItemClicked(QModelIndex)));
 }
 
 RouteViewer::~RouteViewer()
@@ -69,20 +66,4 @@ void RouteViewer::setBusyIndicator(bool busy)
     /* Set the twirly busy indicator in the title bar */
     setAttribute(Qt::WA_Maemo5ShowProgressIndicator, busy);
 #endif
-
-}
-
-void RouteViewer::handleItemExpanded(const QModelIndex &index)
-{
-    int childRows = index.model()->rowCount(index);
-    ui->treeView->scrollTo(index.child(childRows - 1, 0));
-    ui->treeView->scrollTo(index);
-}
-
-void RouteViewer::handleItemClicked(const QModelIndex &index)
-{
-    if (ui->treeView->isExpanded(index))
-        ui->treeView->collapse(index);
-    else
-        ui->treeView->expand(index);
 }
