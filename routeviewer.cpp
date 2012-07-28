@@ -55,7 +55,6 @@ void RouteViewer::setModel(RouteModel *model)
 
     /* Set root view to location of route data in model */
     ui->treeView->setRootIndex(model->item(1)->index());
-    ui->treeView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
 
 void RouteViewer::handleDataFinished()
