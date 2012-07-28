@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include "routemodel.h"
+#include "routedelegate.h"
 
 namespace Ui {
 class RouteViewer;
@@ -29,6 +30,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
+    RouteDelegate *delegate;
     Ui::RouteViewer *ui;
     RouteModel *model;
 

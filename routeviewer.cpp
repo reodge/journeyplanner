@@ -6,14 +6,17 @@
 
 RouteViewer::RouteViewer(QWidget *parent) :
     QMainWindow(parent),
+    delegate(new RouteDelegate),
     ui(new Ui::RouteViewer)
 {
     ui->setupUi(this);
+    ui->treeView->setItemDelegate(delegate);
 }
 
 RouteViewer::~RouteViewer()
 {
     delete ui;
+    delete delegate;
 }
 
 void RouteViewer::hideEvent(QHideEvent *event)
