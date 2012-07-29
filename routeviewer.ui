@@ -26,9 +26,6 @@
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollPerPixel</enum>
       </property>
-      <property name="rootIsDecorated">
-       <bool>false</bool>
-      </property>
       <property name="animated">
        <bool>true</bool>
       </property>

@@ -8,9 +8,20 @@ RouteTreeView::RouteTreeView(QWidget *parent) :
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(handleClicked(QModelIndex)));
 }
 
+void RouteTreeView::drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const
+{
+    if (isTopLevelIndex(index))
+        QTreeView::drawBranches(painter, rect, index);
+}
+
+bool RouteTreeView::isTopLevelIndex(const QModelIndex &index) const
+{
+    return (index.parent() == index.model()->index(1, 0));
+}
+
 void RouteTreeView::handleClicked(const QModelIndex &index)
 {
-    if (index.parent() == index.model()->index(1, 0))
+    if (isTopLevelIndex(index))
     {
         if (isExpanded(index))
             collapse(index);

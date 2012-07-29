@@ -9,6 +9,14 @@ class RouteModel : public QStandardItemModel
 {
     Q_OBJECT
 public:
+    /* Extensions to model data roles */
+    enum ItemDataRole
+    {
+        AttributesRole = Qt::UserRole,
+        SummaryRole,
+        DetailedRole
+    };
+
     enum formLayout
     {
         LAYOUT_FROM_NAME,

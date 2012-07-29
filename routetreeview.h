@@ -9,7 +9,10 @@ class RouteTreeView : public QTreeView
 public:
     explicit RouteTreeView(QWidget *parent = 0);
 
+    void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
+
 private slots:
+    bool isTopLevelIndex(const QModelIndex &index) const;
     void handleClicked(const QModelIndex &index);
     void handleExpanded(const QModelIndex &index);
 };
