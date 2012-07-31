@@ -22,6 +22,13 @@ private:
     QString resourceFromType(const QString type) const;
     QPixmap getRoutePixmap(const QStandardItem *item) const;
 
+    /* Handler member function pointers */
+    void (TFLXmlHandler::*startTagHandler)(const QString &, const QXmlAttributes &);
+    void (TFLXmlHandler::*endTagHandler)(const QString &);
+
+    void itdRequestStart(const QString &name, const QXmlAttributes &atts);
+    void itdRequestEnd(const QString &name);
+
 public:
     explicit TFLXmlHandler();
 

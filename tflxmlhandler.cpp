@@ -11,6 +11,10 @@ TFLXmlHandler::TFLXmlHandler() :
     loc(0)
 {
     initialiseTagAssociations();
+
+    /* Initial handler pointers */
+    startTagHandler = &TFLXmlHandler::itdRequestStart;
+    endTagHandler = &TFLXmlHandler::itdRequestEnd;
 }
 
 void TFLXmlHandler::setDecorations()
@@ -88,7 +92,9 @@ bool TFLXmlHandler::endDocument()
     QStandardItem *item = new QStandardItem("Search later ...");
     root->appendRow(item);
 
+#if 0
     setDecorations();
+#endif
 
     return true;
 }
@@ -100,8 +106,9 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
 {
     Q_UNUSED (namespaceURI);
     Q_UNUSED (localName);
-    Q_UNUSED (atts);
 
+    (this->*startTagHandler)(qName, atts);
+#if 0
     if (!ignoreTag.isEmpty())
     {
         return true;
@@ -126,6 +133,7 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
         loc->appendRow(item);
         loc = item;
     }
+#endif
 
     return true;
 }
@@ -144,6 +152,9 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
     Q_UNUSED (namespaceURI);
     Q_UNUSED (localName);
 
+    (this->*endTagHandler)(qName);
+
+#if 0
     if (qName == ignoreTag)
     {
         ignoreTag.clear();
@@ -159,6 +170,7 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
         else
             validTags = tagAssociations.values(loc->text());
     }
+#endif
 
     return true;
 }
@@ -239,4 +251,14 @@ QPixmap TFLXmlHandler::getRoutePixmap(const QStandardItem *item) const
     }
 
     return image;
+}
+
+void TFLXmlHandler::itdRequestStart(const QString &name, const QXmlAttributes &atts)
+{
+    qDebug("itdRequestStart");
+}
+
+void TFLXmlHandler::itdRequestEnd(const QString &name)
+{
+    qDebug("itdRequestEnd");
 }
