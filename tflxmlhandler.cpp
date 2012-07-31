@@ -1,4 +1,5 @@
 #include "tflxmlhandler.h"
+#include "routemodel.h"
 #include <QDebug>
 
 Q_DECLARE_METATYPE(QXmlAttributes);
@@ -14,6 +15,14 @@ TFLXmlHandler::TFLXmlHandler() :
 
 void TFLXmlHandler::setDecorations()
 {
+    QStandardItem *item = model->item(1, 0);
+
+    for (int i = 1; i < item->rowCount() - 1; ++i)
+    {
+        QStandardItem *route = item->child(i);
+
+        route->setData(getRoutePixmap(route), Qt::DecorationRole);
+    }
 }
 
 void TFLXmlHandler::initialiseValidTags()
@@ -53,6 +62,12 @@ void TFLXmlHandler::setRootItem(QStandardItem *item)
 bool TFLXmlHandler::startDocument()
 {
     qDebug() << ("Parsing started");
+
+    if (!model || !root)
+    {
+        qDebug("Model not set properly");
+        return false;
+    }
 
     root->removeRow(root->rowCount() - 1);
     QStandardItem *item = new QStandardItem("Search earlier ...");
@@ -107,7 +122,7 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
 
     if (item)
     {
-        item->setData(QVariant::fromValue<QXmlAttributes>(atts));
+        item->setData(QVariant::fromValue<QXmlAttributes>(atts), RouteModel::AttributesRole);
         loc->appendRow(item);
         loc = item;
     }
@@ -154,4 +169,74 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
                 " Line: " << exception.lineNumber() << ", Column: " << exception.columnNumber() << endl;
 
     return false;
+}
+
+QString TFLXmlHandler::resourceFromType(const QString type) const
+{
+    bool ok = false;
+    int num = type.toInt(&ok);
+
+    if (!ok)
+        return "";
+
+    switch (num)
+    {
+    case 1:
+        return ":/tube";
+    case 6:
+        return ":/train";
+    case 100:
+        return ":/walk";
+    default:
+        return "";
+    }
+}
+
+QPixmap TFLXmlHandler::getRoutePixmap(const QStandardItem *item) const
+{
+    QPixmap image;
+    QStandardItem *child;
+    int i, j;
+
+    for (i = 0; i < item->rowCount(); ++i)
+    {
+        child = item->child(i);
+        if (child->text() == "itdPartialRouteList")
+            break;
+    }
+
+    if (i == item->rowCount())
+    {
+        qDebug("Couldn't find itdPartialRouteList");
+        return image;
+    }
+
+    /* Child is now our itdPartialRouteList, we will add an icon for each partial route we find */
+    for (i = 0; i < child->rowCount(); ++i)
+    {
+        QStandardItem *partialRoute = child->child(i);
+
+        if (partialRoute->text() != "itdPartialRoute")
+            continue;
+
+        QStandardItem *mot;
+        for (j = 0; j < partialRoute->rowCount(); ++j)
+        {
+            mot = partialRoute->child(j);
+            if (mot->text() == "itdMeansOfTransport")
+                break;
+        }
+
+        if (j == partialRoute->rowCount())
+        {
+            qDebug("Couldn't find itdMeansOfTransport");
+            continue;
+        }
+
+        QXmlAttributes atts = mot->data(RouteModel::AttributesRole).value<QXmlAttributes>();
+        QString iconType = atts.value("type");
+        QString resourceURL = resourceFromType(iconType);
+    }
+
+    return image;
 }
