@@ -262,7 +262,10 @@ void TFLXmlHandler::itdItineraryEnd(const QString &name)
 void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes &atts)
 {
     if (name == "itdRoute")
+    {
+        loc->appendRow(new QStandardItem(atts.value("publicDuration")));
         downOneLevel(TAG_FN_EXPAND(itdRoute));
+    }
 }
 
 void TFLXmlHandler::itdRouteListEnd(const QString &name)
@@ -375,7 +378,7 @@ void TFLXmlHandler::itdFareStart(const QString &name, const QXmlAttributes &atts
 
 void TFLXmlHandler::itdFareEnd(const QString &name)
 {
-    if (name == "itdFareEnd")
+    if (name == "itdFare")
         upOneLevel();
 }
 
