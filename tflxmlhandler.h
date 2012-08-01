@@ -3,6 +3,12 @@
 
 #include <QXmlDefaultHandler>
 #include <QStandardItemModel>
+#include <QStack>
+
+class TFLXmlHandler;
+
+typedef void (TFLXmlHandler::*StartTagHandlerFn)(const QString &, const QXmlAttributes &);
+typedef void (TFLXmlHandler::*EndTagHandlerFn)(const QString &);
 
 class TFLXmlHandler : public QXmlDefaultHandler
 {
@@ -10,10 +16,9 @@ private:
     QStandardItemModel *model;
     QStandardItem *root;
     QStandardItem *loc;
-    QMultiHash<QString, QString> tagAssociations;
-    QList<QString> validTags;
+    QStack<StartTagHandlerFn> startTagHandlerStack;
+    QStack<EndTagHandlerFn> endTagHandlerStack;
     QString ignoreTag;
-    bool started;
 
     void initialiseTagAssociations();
     void initialiseValidTags();
@@ -23,11 +28,46 @@ private:
     QPixmap getRoutePixmap(const QStandardItem *item) const;
 
     /* Handler member function pointers */
-    void (TFLXmlHandler::*startTagHandler)(const QString &, const QXmlAttributes &);
-    void (TFLXmlHandler::*endTagHandler)(const QString &);
+    StartTagHandlerFn startTagHandler;
+    EndTagHandlerFn endTagHandler;
 
+    /* Useful functions to deal with stack and member function pointers */
+    void upOneLevel();
+    void downOneLevel(StartTagHandlerFn s, EndTagHandlerFn e);
+
+    /* Worker functions for each xml tag level */
     void itdRequestStart(const QString &name, const QXmlAttributes &atts);
     void itdRequestEnd(const QString &name);
+    void itdTripRequestStart(const QString &name, const QXmlAttributes &atts);
+    void itdTripRequestEnd(const QString &name);
+    void itdItineraryStart(const QString &name, const QXmlAttributes &atts);
+    void itdItineraryEnd(const QString &name);
+    void itdRouteListStart(const QString &name, const QXmlAttributes &atts);
+    void itdRouteListEnd(const QString &name);
+    void itdRouteStart(const QString &name, const QXmlAttributes &atts);
+    void itdRouteEnd(const QString &name);
+    void itdPartialRouteListStart(const QString &name, const QXmlAttributes &atts);
+    void itdPartialRouteListEnd(const QString &name);
+    void itdPartialRouteStart(const QString &name, const QXmlAttributes &atts);
+    void itdPartialRouteEnd(const QString &name);
+    void itdPointStart(const QString &name, const QXmlAttributes &atts);
+    void itdPointEnd(const QString &name);
+    void itdDateTimeStart(const QString &name, const QXmlAttributes &atts);
+    void itdDateTimeEnd(const QString &name);
+    void itdDateStart(const QString &name, const QXmlAttributes &atts);
+    void itdDateEnd(const QString &name);
+    void itdTimeStart(const QString &name, const QXmlAttributes &atts);
+    void itdTimeEnd(const QString &name);
+    void itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts);
+    void itdMeansOfTransportEnd(const QString &name);
+    void itdFareStart(const QString &name, const QXmlAttributes &atts);
+    void itdFareEnd(const QString &name);
+    void itdTariffzonesStart(const QString &name, const QXmlAttributes &atts);
+    void itdTariffzonesEnd(const QString &name);
+    void itdZonesStart(const QString &name, const QXmlAttributes &atts);
+    void itdZonesEnd(const QString &name);
+    void zoneElemStart(const QString &name, const QXmlAttributes &atts);
+    void zoneElemEnd(const QString &name);
 
 public:
     explicit TFLXmlHandler();

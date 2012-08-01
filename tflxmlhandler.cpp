@@ -4,17 +4,14 @@
 
 Q_DECLARE_METATYPE(QXmlAttributes);
 
+#define TAG_FN_EXPAND(FUNC) &TFLXmlHandler::FUNC##Start, &TFLXmlHandler::FUNC##End
+
 TFLXmlHandler::TFLXmlHandler() :
     QXmlDefaultHandler(),
     model(0),
     root(0),
     loc(0)
 {
-    initialiseTagAssociations();
-
-    /* Initial handler pointers */
-    startTagHandler = &TFLXmlHandler::itdRequestStart;
-    endTagHandler = &TFLXmlHandler::itdRequestEnd;
 }
 
 void TFLXmlHandler::setDecorations()
@@ -27,29 +24,6 @@ void TFLXmlHandler::setDecorations()
 
         route->setData(getRoutePixmap(route), Qt::DecorationRole);
     }
-}
-
-void TFLXmlHandler::initialiseValidTags()
-{
-    validTags.clear();
-    validTags.append("itdRoute");
-}
-
-/* Set up which tags can lead to other tags */
-void TFLXmlHandler::initialiseTagAssociations()
-{
-    tagAssociations.clear();
-    tagAssociations.insert("itdRoute", "itdPartialRouteList");
-    tagAssociations.insert("itdRoute", "itdFare");
-    tagAssociations.insert("itdPartialRouteList", "itdPartialRoute");
-    tagAssociations.insert("itdFare", "itdTariffzones");
-    tagAssociations.insert("itdPartialRoute", "itdPoint");
-    tagAssociations.insert("itdPartialRoute", "itdMeansOfTransport");
-    tagAssociations.insert("itdTariffzones", "itdZones");
-    tagAssociations.insert("itdPoint", "itdDateTime");
-    tagAssociations.insert("itdZones", "zoneElem");
-    tagAssociations.insert("itdDateTime", "itdDate");
-    tagAssociations.insert("itdDateTime", "itdTime");
 }
 
 void TFLXmlHandler::setModel(QStandardItemModel *model)
@@ -77,10 +51,17 @@ bool TFLXmlHandler::startDocument()
     QStandardItem *item = new QStandardItem("Search earlier ...");
     root->appendRow(item);
     loc = root;
-
-    initialiseValidTags();
     ignoreTag.clear();
-    started = false;
+
+    /* Initial handler pointers */
+    startTagHandler = &TFLXmlHandler::itdRequestStart;
+    endTagHandler = &TFLXmlHandler::itdRequestEnd;
+
+    /* Set up starting state of the tag handler stacks */
+    startTagHandlerStack.clear();
+    endTagHandlerStack.clear();
+    startTagHandlerStack.push(startTagHandler);
+    endTagHandlerStack.push(endTagHandler);
 
     return true;
 }
@@ -107,33 +88,12 @@ bool TFLXmlHandler::startElement(const QString &namespaceURI,
     Q_UNUSED (namespaceURI);
     Q_UNUSED (localName);
 
-    (this->*startTagHandler)(qName, atts);
-#if 0
     if (!ignoreTag.isEmpty())
     {
         return true;
     }
 
-    QStandardItem *item = 0;
-
-    if (validTags.contains(qName))
-    {
-        started = true;
-        item = new QStandardItem(qName);
-        validTags = tagAssociations.values(qName);
-    }
-    else if (started)
-    {
-        ignoreTag = qName;
-    }
-
-    if (item)
-    {
-        item->setData(QVariant::fromValue<QXmlAttributes>(atts), RouteModel::AttributesRole);
-        loc->appendRow(item);
-        loc = item;
-    }
-#endif
+    (this->*startTagHandler)(qName, atts);
 
     return true;
 }
@@ -152,25 +112,13 @@ bool TFLXmlHandler::endElement(const QString &namespaceURI,
     Q_UNUSED (namespaceURI);
     Q_UNUSED (localName);
 
-    (this->*endTagHandler)(qName);
-
-#if 0
     if (qName == ignoreTag)
     {
         ignoreTag.clear();
         return true;
     }
 
-    if (qName == loc->text())
-    {
-        loc = loc->parent();
-
-        if (loc == root)
-            initialiseValidTags();
-        else
-            validTags = tagAssociations.values(loc->text());
-    }
-#endif
+    (this->*endTagHandler)(qName);
 
     return true;
 }
@@ -253,12 +201,214 @@ QPixmap TFLXmlHandler::getRoutePixmap(const QStandardItem *item) const
     return image;
 }
 
+void TFLXmlHandler::upOneLevel()
+{
+    startTagHandler = startTagHandlerStack.pop();
+    endTagHandler = endTagHandlerStack.pop();
+}
+
+void TFLXmlHandler::downOneLevel(StartTagHandlerFn s, EndTagHandlerFn e)
+{
+        startTagHandlerStack.push(startTagHandler);
+        startTagHandler = s;
+
+        endTagHandlerStack.push(endTagHandler);
+        endTagHandler = e;
+}
+
 void TFLXmlHandler::itdRequestStart(const QString &name, const QXmlAttributes &atts)
 {
-    qDebug("itdRequestStart");
+    /* Because we don't have a handler for top level, so ignore this */
+    if (name == "itdRequest")
+        downOneLevel(TAG_FN_EXPAND(itdRequest));
+    else if (name == "itdTripRequest")
+        downOneLevel(TAG_FN_EXPAND(itdTripRequest));
+    else
+        ignoreTag = name;
 }
 
 void TFLXmlHandler::itdRequestEnd(const QString &name)
 {
-    qDebug("itdRequestEnd");
+    if (name == "itdRequest")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdTripRequestStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdItinerary")
+        downOneLevel(TAG_FN_EXPAND(itdItinerary));
+    else
+        ignoreTag = name;
+}
+
+void TFLXmlHandler::itdTripRequestEnd(const QString &name)
+{
+    if (name == "itdTripRequest")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdItineraryStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdRouteList")
+        downOneLevel(TAG_FN_EXPAND(itdRouteList));
+}
+
+void TFLXmlHandler::itdItineraryEnd(const QString &name)
+{
+    if (name == "itdItinerary")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdRoute")
+        downOneLevel(TAG_FN_EXPAND(itdRoute));
+}
+
+void TFLXmlHandler::itdRouteListEnd(const QString &name)
+{
+    if (name == "itdRouteList")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdRouteStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdPartialRouteList")
+        downOneLevel(TAG_FN_EXPAND(itdPartialRouteList));
+    else if (name == "itdFare")
+        downOneLevel(TAG_FN_EXPAND(itdFare));
+}
+
+void TFLXmlHandler::itdRouteEnd(const QString &name)
+{
+    if (name == "itdRoute")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdPartialRoute")
+        downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
+}
+
+void TFLXmlHandler::itdPartialRouteListEnd(const QString &name)
+{
+    if (name == "itdPartialRouteList")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdPoint")
+        downOneLevel(TAG_FN_EXPAND(itdPoint));
+    else if (name == "itdMeansOfTransport")
+        downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
+}
+
+void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
+{
+    if (name == "itdPartialRoute")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdPointStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdDateTime")
+        downOneLevel(TAG_FN_EXPAND(itdDateTime));
+}
+
+void TFLXmlHandler::itdPointEnd(const QString &name)
+{
+    if (name == "itdPoint")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdDateTimeStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdDate")
+        downOneLevel(TAG_FN_EXPAND(itdDate));
+    else if (name == "itdTime")
+        downOneLevel(TAG_FN_EXPAND(itdTime));
+}
+
+void TFLXmlHandler::itdDateTimeEnd(const QString &name)
+{
+    if (name == "itdDateTime")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdDateStart(const QString &name, const QXmlAttributes &atts)
+{
+}
+
+void TFLXmlHandler::itdDateEnd(const QString &name)
+{
+    if (name == "itdDate")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdTimeStart(const QString &name, const QXmlAttributes &atts)
+{
+}
+
+void TFLXmlHandler::itdTimeEnd(const QString &name)
+{
+    if (name == "itdTime")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts)
+{
+}
+
+void TFLXmlHandler::itdMeansOfTransportEnd(const QString &name)
+{
+    if (name == "itdMeansOfTransport")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdFareStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdTariffzones")
+        downOneLevel(TAG_FN_EXPAND(itdTariffzones));
+}
+
+void TFLXmlHandler::itdFareEnd(const QString &name)
+{
+    if (name == "itdFareEnd")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdTariffzonesStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdZones")
+        downOneLevel(TAG_FN_EXPAND(itdZones));
+}
+
+void TFLXmlHandler::itdTariffzonesEnd(const QString &name)
+{
+    if (name == "itdTariffzones")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdZonesStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "zoneElem")
+        downOneLevel(TAG_FN_EXPAND(zoneElem));
+}
+
+void TFLXmlHandler::itdZonesEnd(const QString &name)
+{
+    if (name == "itdZones")
+        upOneLevel();
+}
+
+void TFLXmlHandler::zoneElemStart(const QString &name, const QXmlAttributes &atts)
+{
+}
+
+void TFLXmlHandler::zoneElemEnd(const QString &name)
+{
+    if (name == "zoneElem")
+        upOneLevel();
 }
