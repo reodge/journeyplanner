@@ -263,7 +263,7 @@ void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes 
 {
     if (name == "itdRoute")
     {
-        loc->appendRow(new QStandardItem(atts.value("publicDuration")));
+        routeDuration = QTime::fromString(atts.value("publicDuration"), "hh:mm");
         downOneLevel(TAG_FN_EXPAND(itdRoute));
     }
 }
@@ -285,7 +285,10 @@ void TFLXmlHandler::itdRouteStart(const QString &name, const QXmlAttributes &att
 void TFLXmlHandler::itdRouteEnd(const QString &name)
 {
     if (name == "itdRoute")
+    {
+        loc->appendRow(new QStandardItem(routeDuration.toString()), "hh:mm");
         upOneLevel();
+    }
 }
 
 void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttributes &atts)

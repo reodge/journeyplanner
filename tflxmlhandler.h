@@ -3,6 +3,8 @@
 
 #include <QXmlDefaultHandler>
 #include <QStandardItemModel>
+#include <QDateTime>
+#include <QTime>
 #include <QStack>
 
 class TFLXmlHandler;
@@ -16,10 +18,14 @@ private:
     QStandardItemModel *model;
     QStandardItem *root;
     QStandardItem *loc;
-    QStack<StartTagHandlerFn> startTagHandlerStack;
-    QStack<EndTagHandlerFn> endTagHandlerStack;
     QString ignoreTag;
 
+    /* Data to pass between tag handlers. */
+    QDateTime routeDepart;
+    QDateTime routeArrive;
+    QTime routeDuration;
+
+    /* Deprecated */
     void setDecorations();
     QString resourceFromType(const QString type) const;
     QPixmap getRoutePixmap(const QStandardItem *item) const;
@@ -27,6 +33,8 @@ private:
     /* Handler member function pointers */
     StartTagHandlerFn startTagHandler;
     EndTagHandlerFn endTagHandler;
+    QStack<StartTagHandlerFn> startTagHandlerStack;
+    QStack<EndTagHandlerFn> endTagHandlerStack;
 
     /* Useful functions to deal with stack and member function pointers */
     void upOneLevel();
