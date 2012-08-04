@@ -20,9 +20,6 @@ private:
     QStack<EndTagHandlerFn> endTagHandlerStack;
     QString ignoreTag;
 
-    void initialiseTagAssociations();
-    void initialiseValidTags();
-
     void setDecorations();
     QString resourceFromType(const QString type) const;
     QPixmap getRoutePixmap(const QStandardItem *item) const;
