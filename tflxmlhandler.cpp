@@ -263,7 +263,10 @@ void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes 
 {
     if (name == "itdRoute")
     {
+        qDebug("New route");
         routeDuration = QTime::fromString(atts.value("publicDuration"), "hh:mm");
+        routeDepart = 0;
+        routeArrive = 0;
         downOneLevel(TAG_FN_EXPAND(itdRoute));
     }
 }
@@ -286,7 +289,25 @@ void TFLXmlHandler::itdRouteEnd(const QString &name)
 {
     if (name == "itdRoute")
     {
-        loc->appendRow(new QStandardItem(routeDuration.toString()), "hh:mm");
+        QString summaryString;
+
+        if (routeDepart)
+        {
+            summaryString += routeDepart->toString("'Dep: 'h:mm' '");
+            delete routeDepart;
+            routeDepart = 0;
+        }
+
+        if (routeArrive)
+        {
+            summaryString += routeArrive->toString("'Arr: 'h:mm' '");
+            delete routeArrive;
+            routeArrive = 0;
+        }
+
+        summaryString += routeDuration.toString("'Dur: 'hh:mm");
+
+        loc->appendRow(new QStandardItem(summaryString));
         upOneLevel();
     }
 }
@@ -320,46 +341,86 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
 void TFLXmlHandler::itdPointStart(const QString &name, const QXmlAttributes &atts)
 {
     if (name == "itdDateTime")
+    {
+        currentDateTime = new QDateTime();
         downOneLevel(TAG_FN_EXPAND(itdDateTime));
+    }
 }
 
 void TFLXmlHandler::itdPointEnd(const QString &name)
 {
     if (name == "itdPoint")
+    {
+        if (currentDateTime)
+        {
+            qDebug() << "Found DateTime:" << currentDateTime->toString();
+
+            if (!routeDepart)
+                routeDepart = currentDateTime;
+            else
+            {
+                if (routeArrive)
+                    delete routeArrive;
+
+                routeArrive = currentDateTime;
+            }
+
+            currentDateTime = 0;
+        }
         upOneLevel();
+    }
 }
 
 void TFLXmlHandler::itdDateTimeStart(const QString &name, const QXmlAttributes &atts)
 {
     if (name == "itdDate")
-        downOneLevel(TAG_FN_EXPAND(itdDate));
+    {
+        int y, m, d;
+        bool all_ok = true;
+        bool this_ok = false;
+
+        y = atts.value("year").toInt(&this_ok);
+        all_ok = all_ok && this_ok;
+
+        m = atts.value("month").toInt(&this_ok);
+        all_ok = all_ok && this_ok;
+
+        d = atts.value("day").toInt(&this_ok);
+        all_ok = all_ok && this_ok;
+
+        if (!all_ok)
+        {
+            qDebug("Error in decoding itdDate");
+            return;
+        }
+
+        currentDateTime->setDate(QDate(y, m, d));
+    }
     else if (name == "itdTime")
-        downOneLevel(TAG_FN_EXPAND(itdTime));
+    {
+        int h, m;
+        bool all_ok = true;
+        bool this_ok = false;
+
+        h = atts.value("hour").toInt(&this_ok);
+        all_ok = all_ok && this_ok;
+
+        m = atts.value("minute").toInt(&this_ok);
+        all_ok = all_ok && this_ok;
+
+        if (!all_ok)
+        {
+            qDebug("Error in decoding itdTime");
+            return;
+        }
+
+        currentDateTime->setTime(QTime(h, m, 0));
+    }
 }
 
 void TFLXmlHandler::itdDateTimeEnd(const QString &name)
 {
     if (name == "itdDateTime")
-        upOneLevel();
-}
-
-void TFLXmlHandler::itdDateStart(const QString &name, const QXmlAttributes &atts)
-{
-}
-
-void TFLXmlHandler::itdDateEnd(const QString &name)
-{
-    if (name == "itdDate")
-        upOneLevel();
-}
-
-void TFLXmlHandler::itdTimeStart(const QString &name, const QXmlAttributes &atts)
-{
-}
-
-void TFLXmlHandler::itdTimeEnd(const QString &name)
-{
-    if (name == "itdTime")
         upOneLevel();
 }
 

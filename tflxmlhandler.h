@@ -21,8 +21,9 @@ private:
     QString ignoreTag;
 
     /* Data to pass between tag handlers. */
-    QDateTime routeDepart;
-    QDateTime routeArrive;
+    QDateTime *currentDateTime;
+    QDateTime *routeDepart;
+    QDateTime *routeArrive;
     QTime routeDuration;
 
     /* Deprecated */
@@ -59,10 +60,6 @@ private:
     void itdPointEnd(const QString &name);
     void itdDateTimeStart(const QString &name, const QXmlAttributes &atts);
     void itdDateTimeEnd(const QString &name);
-    void itdDateStart(const QString &name, const QXmlAttributes &atts);
-    void itdDateEnd(const QString &name);
-    void itdTimeStart(const QString &name, const QXmlAttributes &atts);
-    void itdTimeEnd(const QString &name);
     void itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts);
     void itdMeansOfTransportEnd(const QString &name);
     void itdFareStart(const QString &name, const QXmlAttributes &atts);
