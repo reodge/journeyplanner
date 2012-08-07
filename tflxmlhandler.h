@@ -25,11 +25,12 @@ private:
     QDateTime *routeDepart;
     QDateTime *routeArrive;
     QTime routeDuration;
+    QPixmap *routeIcons;
 
-    /* Deprecated */
-    void setDecorations();
+    /* Useful helper functions */
     QString resourceFromType(const QString type) const;
-    QPixmap getRoutePixmap(const QStandardItem *item) const;
+    QPixmap *addPixmaps(const QPixmap &p1, const QPixmap &p2);
+
 
     /* Handler member function pointers */
     StartTagHandlerFn startTagHandler;

@@ -1,5 +1,6 @@
 #include "tflxmlhandler.h"
 #include "routemodel.h"
+#include <QBrush>
 #include <QDebug>
 
 Q_DECLARE_METATYPE(QXmlAttributes);
@@ -12,18 +13,6 @@ TFLXmlHandler::TFLXmlHandler() :
     root(0),
     loc(0)
 {
-}
-
-void TFLXmlHandler::setDecorations()
-{
-    QStandardItem *item = model->item(1, 0);
-
-    for (int i = 1; i < item->rowCount() - 1; ++i)
-    {
-        QStandardItem *route = item->child(i);
-
-        route->setData(getRoutePixmap(route), Qt::DecorationRole);
-    }
 }
 
 void TFLXmlHandler::setModel(QStandardItemModel *model)
@@ -144,7 +133,7 @@ QString TFLXmlHandler::resourceFromType(const QString type) const
     case 1:
         return ":/tube";
     case 6:
-        return ":/train";
+        return ":/rail";
     case 100:
         return ":/walk";
     default:
@@ -152,53 +141,26 @@ QString TFLXmlHandler::resourceFromType(const QString type) const
     }
 }
 
-QPixmap TFLXmlHandler::getRoutePixmap(const QStandardItem *item) const
+QPixmap *TFLXmlHandler::addPixmaps(const QPixmap &p1, const QPixmap &p2)
 {
-    QPixmap image;
-    QStandardItem *child;
-    int i, j;
 
-    for (i = 0; i < item->rowCount(); ++i)
+    QPixmap *out;
+    if (p1.isNull())
     {
-        child = item->child(i);
-        if (child->text() == "itdPartialRouteList")
-            break;
+        if (p2.isNull())
+            return new QPixmap();
+        else
+            out = new QPixmap(p2.size().width(), p2.size().height());
     }
+    else
+        out = new QPixmap(p1.size().width() + p2.size().width(), p1.size().height());
 
-    if (i == item->rowCount())
-    {
-        qDebug("Couldn't find itdPartialRouteList");
-        return image;
-    }
+    out->fill();
+    QPainter p(out);
+    p.drawPixmap(0, 0, p1);
+    p.drawPixmap(p1.size().width(), 0, p2);
 
-    /* Child is now our itdPartialRouteList, we will add an icon for each partial route we find */
-    for (i = 0; i < child->rowCount(); ++i)
-    {
-        QStandardItem *partialRoute = child->child(i);
-
-        if (partialRoute->text() != "itdPartialRoute")
-            continue;
-
-        QStandardItem *mot;
-        for (j = 0; j < partialRoute->rowCount(); ++j)
-        {
-            mot = partialRoute->child(j);
-            if (mot->text() == "itdMeansOfTransport")
-                break;
-        }
-
-        if (j == partialRoute->rowCount())
-        {
-            qDebug("Couldn't find itdMeansOfTransport");
-            continue;
-        }
-
-        QXmlAttributes atts = mot->data(RouteModel::AttributesRole).value<QXmlAttributes>();
-        QString iconType = atts.value("type");
-        QString resourceURL = resourceFromType(iconType);
-    }
-
-    return image;
+    return out;
 }
 
 void TFLXmlHandler::upOneLevel()
@@ -267,6 +229,7 @@ void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes 
         routeDuration = QTime::fromString(atts.value("publicDuration"), "hh:mm");
         routeDepart = 0;
         routeArrive = 0;
+        routeIcons = new QPixmap();
         downOneLevel(TAG_FN_EXPAND(itdRoute));
     }
 }
@@ -307,7 +270,13 @@ void TFLXmlHandler::itdRouteEnd(const QString &name)
 
         summaryString += routeDuration.toString("'Dur: 'hh:mm");
 
-        loc->appendRow(new QStandardItem(summaryString));
+        /* Set up the model data */
+        QStandardItem *item = new QStandardItem(summaryString);
+        item->setData(*routeIcons, Qt::DecorationRole);
+        loc->appendRow(item);
+
+        delete routeIcons;
+
         upOneLevel();
     }
 }
@@ -329,7 +298,13 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     if (name == "itdPoint")
         downOneLevel(TAG_FN_EXPAND(itdPoint));
     else if (name == "itdMeansOfTransport")
+    {
+        QString s = resourceFromType(atts.value("type"));
+        QPixmap *newIcons = addPixmaps(*routeIcons, QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
+        delete routeIcons;
+        routeIcons = newIcons;
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
+    }
 }
 
 void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
@@ -353,8 +328,6 @@ void TFLXmlHandler::itdPointEnd(const QString &name)
     {
         if (currentDateTime)
         {
-            qDebug() << "Found DateTime:" << currentDateTime->toString();
-
             if (!routeDepart)
                 routeDepart = currentDateTime;
             else
