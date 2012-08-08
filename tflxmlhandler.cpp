@@ -247,6 +247,7 @@ void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes 
         routeDepart = 0;
         routeArrive = 0;
         routeIcons = new QPixmap();
+        loc->appendRow(new QStandardItem());
         downOneLevel(TAG_FN_EXPAND(itdRoute));
     }
 }
@@ -288,9 +289,9 @@ void TFLXmlHandler::itdRouteEnd(const QString &name)
         summaryString += routeDuration.toString("'Dur: 'hh:mm");
 
         /* Set up the model data */
-        QStandardItem *item = new QStandardItem(summaryString);
+        QStandardItem *item = loc->child(loc->rowCount()-1);
+        item->setData(summaryString, Qt::DisplayRole);
         item->setData(*routeIcons, Qt::DecorationRole);
-        loc->appendRow(item);
 
         delete routeIcons;
 
@@ -302,6 +303,7 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
 {
     if (name == "itdPartialRoute")
     {
+        loc->child(loc->rowCount()-1)->appendRow(new QStandardItem("New partial route!"));
         routeType = atts.value("type");
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
