@@ -145,6 +145,8 @@ QString TFLXmlHandler::resourceFromType(const QString &typeRoute, const QString 
         {
         case 1:
             return ":/tube";
+        case 3:
+            return ":/bus";
         case 6:
             return ":/rail";
         default:
