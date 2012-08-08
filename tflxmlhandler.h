@@ -25,10 +25,11 @@ private:
     QDateTime *routeDepart;
     QDateTime *routeArrive;
     QTime routeDuration;
+    QString routeType;
     QPixmap *routeIcons;
 
     /* Useful helper functions */
-    QString resourceFromType(const QString type) const;
+    QString resourceFromType(const QString &typeRoute, const QString &typeMOT) const;
     QPixmap *addPixmaps(const QPixmap &p1, const QPixmap &p2);
 
 
@@ -63,6 +64,8 @@ private:
     void itdDateTimeEnd(const QString &name);
     void itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts);
     void itdMeansOfTransportEnd(const QString &name);
+    void itdFrequencyInfoStart(const QString &name, const QXmlAttributes &atts);
+    void itdFrequencyInfoEnd(const QString &name);
     void itdFareStart(const QString &name, const QXmlAttributes &atts);
     void itdFareEnd(const QString &name);
     void itdTariffzonesStart(const QString &name, const QXmlAttributes &atts);

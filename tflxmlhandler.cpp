@@ -120,30 +120,45 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
     return false;
 }
 
-QString TFLXmlHandler::resourceFromType(const QString type) const
+QString TFLXmlHandler::resourceFromType(const QString &typeRoute, const QString &typeMOT) const
 {
     bool ok = false;
-    int num = type.toInt(&ok);
+    int num = typeMOT.toInt(&ok);
 
     if (!ok)
         return "";
 
-    switch (num)
+    if (typeRoute == "IT")
     {
-    case 1:
-        return ":/tube";
-    case 6:
-        return ":/rail";
-    case 100:
-        return ":/walk";
-    default:
-        return "";
+        switch (num)
+        {
+        case 100:
+            return ":/walk";
+        default:
+            qDebug() << "resourceFromType unknown IT type:" << num;
+            return "";
+        }
     }
+    else if (typeRoute == "PT")
+    {
+        switch (num)
+        {
+        case 1:
+            return ":/tube";
+        case 6:
+            return ":/rail";
+        default:
+            qDebug() << "resourceFromType unknown PT type:" << num;
+            return "";
+        }
+    }
+
+    qDebug() << "resourceFromType unknown typeRoute:" << typeRoute;
+    return "";
 }
 
 QPixmap *TFLXmlHandler::addPixmaps(const QPixmap &p1, const QPixmap &p2)
 {
-
     QPixmap *out;
     if (p1.isNull())
     {
@@ -284,7 +299,10 @@ void TFLXmlHandler::itdRouteEnd(const QString &name)
 void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttributes &atts)
 {
     if (name == "itdPartialRoute")
+    {
+        routeType = atts.value("type");
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
+    }
 }
 
 void TFLXmlHandler::itdPartialRouteListEnd(const QString &name)
@@ -299,18 +317,23 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
         downOneLevel(TAG_FN_EXPAND(itdPoint));
     else if (name == "itdMeansOfTransport")
     {
-        QString s = resourceFromType(atts.value("type"));
+        QString s = resourceFromType(routeType, atts.value("type"));
         QPixmap *newIcons = addPixmaps(*routeIcons, QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
         delete routeIcons;
         routeIcons = newIcons;
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
     }
+    else if (name == "itdFrequencyInfo")
+        downOneLevel(TAG_FN_EXPAND(itdFrequencyInfo));
 }
 
 void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
 {
     if (name == "itdPartialRoute")
+    {
+        routeType.clear();
         upOneLevel();
+    }
 }
 
 void TFLXmlHandler::itdPointStart(const QString &name, const QXmlAttributes &atts)
@@ -404,6 +427,16 @@ void TFLXmlHandler::itdMeansOfTransportStart(const QString &name, const QXmlAttr
 void TFLXmlHandler::itdMeansOfTransportEnd(const QString &name)
 {
     if (name == "itdMeansOfTransport")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdFrequencyInfoStart(const QString &name, const QXmlAttributes &atts)
+{
+}
+
+void TFLXmlHandler::itdFrequencyInfoEnd(const QString &name)
+{
+    if (name == "itdFrequencyInfo")
         upOneLevel();
 }
 
