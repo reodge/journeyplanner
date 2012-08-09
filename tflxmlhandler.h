@@ -26,6 +26,8 @@ private:
     QDateTime *routeArrive;
     QDateTime *routePartialDepart;
     QDateTime *routePartialArrive;
+    QString namePartialDepart;
+    QString namePartialArrive;
     QTime routeDuration;
     QString routeType;
     QPixmap currentIcon;

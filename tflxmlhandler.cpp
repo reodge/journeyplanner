@@ -120,7 +120,7 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
     return false;
 }
 
-QString TFLXmlHandler::resourceFromType(const QString &typeRoute, const QString &typeMOT) const
+QString TFLXmlHandler::resourceFromType(const QString &category, const QString &typeMOT) const
 {
     bool ok = false;
     int num = typeMOT.toInt(&ok);
@@ -128,7 +128,7 @@ QString TFLXmlHandler::resourceFromType(const QString &typeRoute, const QString 
     if (!ok)
         return "";
 
-    if (typeRoute == "IT")
+    if (category == "IT")
     {
         switch (num)
         {
@@ -139,7 +139,7 @@ QString TFLXmlHandler::resourceFromType(const QString &typeRoute, const QString 
             return "";
         }
     }
-    else if (typeRoute == "PT")
+    else if (category == "PT")
     {
         switch (num)
         {
@@ -155,7 +155,7 @@ QString TFLXmlHandler::resourceFromType(const QString &typeRoute, const QString 
         }
     }
 
-    qDebug() << "resourceFromType unknown typeRoute:" << typeRoute;
+    qDebug() << "resourceFromType unknown type category:" << category;
     return "";
 }
 
@@ -301,9 +301,11 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
 {
     if (name == "itdPartialRoute")
     {
-        routeType = atts.value("type");
+        routePartialTypeCategory = atts.value("type");
         routePartialDepart = 0;
         routePartialArrive = 0;
+        namePartialDepart = QString();
+        namePartialArrive = QString();
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
 }
@@ -317,10 +319,17 @@ void TFLXmlHandler::itdPartialRouteListEnd(const QString &name)
 void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttributes &atts)
 {
     if (name == "itdPoint")
+    {
+        if (namePartialDepart.isEmpty())
+            namePartialDepart = atts.value("name");
+        else if (namePartialArrive.isEmpty())
+            namePartialArrive = atts.value("name");
+
         downOneLevel(TAG_FN_EXPAND(itdPoint));
+    }
     else if (name == "itdMeansOfTransport")
     {
-        QString s = resourceFromType(routeType, atts.value("type"));
+        QString s = resourceFromType(routePartialTypeCategory, atts.value("type"));
         currentIcon = addPixmaps(QPixmap(), QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
         routeIcons = addPixmaps(routeIcons, currentIcon);
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
@@ -333,14 +342,16 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
 {
     if (name == "itdPartialRoute")
     {
-        QString times = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
-        QStandardItem *item = new QStandardItem(times);
+        QString summary = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
+        summary += "\n" + namePartialDepart;
+        summary += "\nto " + namePartialArrive;
+        QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);
 
         delete routePartialDepart;
         delete routePartialArrive;
-        routeType.clear();
+        routePartialTypeCategory.clear();
 
         upOneLevel();
     }
