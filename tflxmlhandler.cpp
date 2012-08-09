@@ -303,8 +303,9 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
 {
     if (name == "itdPartialRoute")
     {
-        loc->child(loc->rowCount()-1)->appendRow(new QStandardItem("New partial route!"));
         routeType = atts.value("type");
+        routePartialDepart = 0;
+        routePartialArrive = 0;
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
 }
@@ -335,7 +336,13 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
 {
     if (name == "itdPartialRoute")
     {
+        QString times = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
+        loc->child(loc->rowCount()-1)->appendRow(new QStandardItem(times));
+
+        delete routePartialDepart;
+        delete routePartialArrive;
         routeType.clear();
+
         upOneLevel();
     }
 }
@@ -421,7 +428,14 @@ void TFLXmlHandler::itdDateTimeStart(const QString &name, const QXmlAttributes &
 void TFLXmlHandler::itdDateTimeEnd(const QString &name)
 {
     if (name == "itdDateTime")
+    {
+        if (!routePartialDepart)
+            routePartialDepart = new QDateTime(*currentDateTime);
+        else if (!routePartialArrive)
+            routePartialArrive = new QDateTime(*currentDateTime);
+
         upOneLevel();
+    }
 }
 
 void TFLXmlHandler::itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts)

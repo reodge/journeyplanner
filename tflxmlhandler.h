@@ -24,6 +24,8 @@ private:
     QDateTime *currentDateTime;
     QDateTime *routeDepart;
     QDateTime *routeArrive;
+    QDateTime *routePartialDepart;
+    QDateTime *routePartialArrive;
     QTime routeDuration;
     QString routeType;
     QPixmap *routeIcons;
