@@ -159,21 +159,21 @@ QString TFLXmlHandler::resourceFromType(const QString &typeRoute, const QString 
     return "";
 }
 
-QPixmap *TFLXmlHandler::addPixmaps(const QPixmap &p1, const QPixmap &p2)
+QPixmap TFLXmlHandler::addPixmaps(const QPixmap &p1, const QPixmap &p2)
 {
-    QPixmap *out;
+    QPixmap out;
     if (p1.isNull())
     {
         if (p2.isNull())
-            return new QPixmap();
+            return QPixmap();
         else
-            out = new QPixmap(p2.size().width(), p2.size().height());
+            out = QPixmap(p2.size().width(), p2.size().height());
     }
     else
-        out = new QPixmap(p1.size().width() + p2.size().width(), p1.size().height());
+        out = QPixmap(p1.size().width() + p2.size().width(), p1.size().height());
 
-    out->fill();
-    QPainter p(out);
+    out.fill();
+    QPainter p(&out);
     p.drawPixmap(0, 0, p1);
     p.drawPixmap(p1.size().width(), 0, p2);
 
@@ -246,7 +246,7 @@ void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes 
         routeDuration = QTime::fromString(atts.value("publicDuration"), "hh:mm");
         routeDepart = 0;
         routeArrive = 0;
-        routeIcons = new QPixmap();
+        routeIcons = QPixmap();
         loc->appendRow(new QStandardItem());
         downOneLevel(TAG_FN_EXPAND(itdRoute));
     }
@@ -291,9 +291,7 @@ void TFLXmlHandler::itdRouteEnd(const QString &name)
         /* Set up the model data */
         QStandardItem *item = loc->child(loc->rowCount()-1);
         item->setData(summaryString, Qt::DisplayRole);
-        item->setData(*routeIcons, Qt::DecorationRole);
-
-        delete routeIcons;
+        item->setData(routeIcons, Qt::DecorationRole);
 
         upOneLevel();
     }
@@ -323,9 +321,8 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     else if (name == "itdMeansOfTransport")
     {
         QString s = resourceFromType(routeType, atts.value("type"));
-        QPixmap *newIcons = addPixmaps(*routeIcons, QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
-        delete routeIcons;
-        routeIcons = newIcons;
+        currentIcon = addPixmaps(QPixmap(), QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
+        routeIcons = addPixmaps(routeIcons, currentIcon);
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
     }
     else if (name == "itdFrequencyInfo")
@@ -337,7 +334,9 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
     if (name == "itdPartialRoute")
     {
         QString times = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
-        loc->child(loc->rowCount()-1)->appendRow(new QStandardItem(times));
+        QStandardItem *item = new QStandardItem(times);
+        item->setData(currentIcon, Qt::DecorationRole);
+        loc->child(loc->rowCount()-1)->appendRow(item);
 
         delete routePartialDepart;
         delete routePartialArrive;

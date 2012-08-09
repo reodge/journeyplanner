@@ -17,7 +17,7 @@ class TFLXmlHandler : public QXmlDefaultHandler
 private:
     QStandardItemModel *model;
     QStandardItem *root;
-    QStandardItem *loc;
+    QStandardItem *loc; /* seems redundant with root, remove maybe? */
     QString ignoreTag;
 
     /* Data to pass between tag handlers. */
@@ -28,11 +28,12 @@ private:
     QDateTime *routePartialArrive;
     QTime routeDuration;
     QString routeType;
-    QPixmap *routeIcons;
+    QPixmap currentIcon;
+    QPixmap routeIcons;
 
     /* Useful helper functions */
     QString resourceFromType(const QString &typeRoute, const QString &typeMOT) const;
-    QPixmap *addPixmaps(const QPixmap &p1, const QPixmap &p2);
+    QPixmap addPixmaps(const QPixmap &p1, const QPixmap &p2);
 
 
     /* Handler member function pointers */
