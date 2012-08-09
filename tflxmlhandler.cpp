@@ -120,10 +120,10 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
     return false;
 }
 
-QString TFLXmlHandler::resourceFromType(const QString &category, const QString &typeMOT) const
+QString TFLXmlHandler::resourceFromType(const QString &category, const QString &type) const
 {
     bool ok = false;
-    int num = typeMOT.toInt(&ok);
+    int num = type.toInt(&ok);
 
     if (!ok)
         return "";
@@ -157,6 +157,44 @@ QString TFLXmlHandler::resourceFromType(const QString &category, const QString &
 
     qDebug() << "resourceFromType unknown type category:" << category;
     return "";
+}
+
+/* This is the same logic as resourceFromType, merge the two? */
+QString TFLXmlHandler::routeTypePrefix(const QString &category, const QString &type) const
+{
+    bool ok = false;
+    int num = type.toInt(&ok);
+    QString generic = "to ";
+
+    if (!ok)
+        return generic;
+
+    if (category == "IT")
+    {
+        switch (num)
+        {
+        case 100:
+            return "Walk to ";
+        default:
+            return generic;
+        }
+    }
+    else if (category == "PT")
+    {
+        switch (num)
+        {
+        case 1:
+            return "Tube to ";
+        case 3:
+            return "Bus to ";
+        case 6:
+            return "Train to ";
+        default:
+            return generic;
+        }
+    }
+
+    return generic;
 }
 
 QPixmap TFLXmlHandler::addPixmaps(const QPixmap &p1, const QPixmap &p2)
@@ -301,7 +339,8 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
 {
     if (name == "itdPartialRoute")
     {
-        routePartialTypeCategory = atts.value("type");
+        routePartialType = atts.value("type");
+        routeType.clear();
         routePartialDepart = 0;
         routePartialArrive = 0;
         namePartialDepart = QString();
@@ -330,7 +369,8 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     }
     else if (name == "itdMeansOfTransport")
     {
-        QString s = resourceFromType(routePartialTypeCategory, atts.value("type"));
+        routeType = atts.value("type");
+        QString s = resourceFromType(routePartialType, routeType);
         currentIcon = addPixmaps(QPixmap(), QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
         routeIcons = addPixmaps(routeIcons, currentIcon);
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
@@ -346,14 +386,14 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
         QString summary = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + namePartialDepart;
-        summary += "\nto " + namePartialArrive;
+        summary += "\n" + routeTypePrefix(routePartialType, routeType) + namePartialArrive;
         QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);
 
         delete routePartialDepart;
         delete routePartialArrive;
-        routePartialTypeCategory.clear();
+        routePartialType.clear();
 
         upOneLevel();
     }

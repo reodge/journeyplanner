@@ -30,14 +30,15 @@ private:
     QString namePartialArrive;
     QTime routeDuration;
     QTime routePartialDuration;
-    QString routePartialTypeCategory;
+    QString routePartialType;
+    QString routeType;
     QPixmap currentIcon;
     QPixmap routeIcons;
 
     /* Useful helper functions */
-    QString resourceFromType(const QString &typeRoute, const QString &typeMOT) const;
+    QString resourceFromType(const QString &category, const QString &type) const;
+    QString routeTypePrefix(const QString &category, const QString &type) const;
     QPixmap addPixmaps(const QPixmap &p1, const QPixmap &p2);
-
 
     /* Handler member function pointers */
     StartTagHandlerFn startTagHandler;
