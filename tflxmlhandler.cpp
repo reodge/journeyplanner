@@ -306,6 +306,7 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
         routePartialArrive = 0;
         namePartialDepart = QString();
         namePartialArrive = QString();
+        routePartialDuration = QTime::fromString(atts.value("timeMinute"), "m");
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
 }
@@ -343,6 +344,7 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
     if (name == "itdPartialRoute")
     {
         QString summary = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
+        summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + namePartialDepart;
         summary += "\nto " + namePartialArrive;
         QStandardItem *item = new QStandardItem(summary);

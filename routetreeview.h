@@ -9,6 +9,7 @@ class RouteTreeView : public QTreeView
 public:
     explicit RouteTreeView(QWidget *parent = 0);
 
+    virtual void mousePressEvent(QMouseEvent *event);
     void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
 
 private slots:

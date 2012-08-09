@@ -29,6 +29,7 @@ private:
     QString namePartialDepart;
     QString namePartialArrive;
     QTime routeDuration;
+    QTime routePartialDuration;
     QString routePartialTypeCategory;
     QPixmap currentIcon;
     QPixmap routeIcons;
