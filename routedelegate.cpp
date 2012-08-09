@@ -11,7 +11,13 @@ void RouteDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 {
     painter->save();
 
-    QStyledItemDelegate::paint(painter, option, index);
+    QStyleOptionViewItem newOptions = option;
+    if (index.parent().parent() != QModelIndex())
+        newOptions.decorationAlignment = Qt::AlignTop;
+    else
+        newOptions.decorationAlignment = Qt::AlignVCenter;
+
+    QStyledItemDelegate::paint(painter, newOptions, index);
 
     /* Make sure the painter is left as we found it */
     painter->restore();
