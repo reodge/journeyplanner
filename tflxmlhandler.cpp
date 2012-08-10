@@ -160,11 +160,15 @@ QString TFLXmlHandler::resourceFromType(const QString &category, const QString &
 }
 
 /* This is the same logic as resourceFromType, merge the two? */
-QString TFLXmlHandler::routeTypePrefix(const QString &category, const QString &type) const
+QString TFLXmlHandler::routeSummary(const QString &category,
+                                    const QString &type,
+                                    const QString &name,
+                                    const QString &dest,
+                                    const QString &endPoint) const
 {
     bool ok = false;
     int num = type.toInt(&ok);
-    QString generic = "to ";
+    QString generic = "to " + dest;
 
     if (!ok)
         return generic;
@@ -174,7 +178,7 @@ QString TFLXmlHandler::routeTypePrefix(const QString &category, const QString &t
         switch (num)
         {
         case 100:
-            return "Walk to ";
+            return "Walk to " + dest;
         default:
             return generic;
         }
@@ -184,11 +188,14 @@ QString TFLXmlHandler::routeTypePrefix(const QString &category, const QString &t
         switch (num)
         {
         case 1:
-            return "Tube to ";
+            return "Take the " + name + " Line towards " + endPoint;
         case 3:
-            return "Bus to ";
+            return "Bus to " + dest;
         case 6:
-            return "Train to ";
+            if (name == "London Overground")
+                return "Take the Overground towards " + endPoint;
+            else
+                return "Take the " + name + " service towards " + endPoint;
         default:
             return generic;
         }
@@ -345,6 +352,8 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
         routePartialArrive = 0;
         namePartialDepart = QString();
         namePartialArrive = QString();
+        routePartialName = QString();
+        routePartialEndpoint = QString();
         routePartialDuration = QTime::fromString(atts.value("timeMinute"), "m");
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
@@ -370,6 +379,12 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     else if (name == "itdMeansOfTransport")
     {
         routeType = atts.value("type");
+        qDebug() << "itdMeansOfTranport: name =" << atts.value("name") << "shortname =" << atts.value("shortname") << "/ trainName =" << atts.value("trainName");
+        if (routeType == "6")
+            routePartialName = atts.value("trainName"); /* TODO doesn't exist for train operators? */
+        else
+            routePartialName = atts.value("shortname");
+        routePartialEndpoint = atts.value("destination");
         QString s = resourceFromType(routePartialType, routeType);
         currentIcon = addPixmaps(QPixmap(), QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
         routeIcons = addPixmaps(routeIcons, currentIcon);
@@ -386,7 +401,7 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
         QString summary = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + namePartialDepart;
-        summary += "\n" + routeTypePrefix(routePartialType, routeType) + namePartialArrive;
+        summary += "\n" + routeSummary(routePartialType, routeType, routePartialName, namePartialArrive, routePartialEndpoint);
         QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);

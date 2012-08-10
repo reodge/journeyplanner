@@ -30,6 +30,8 @@ private:
     QString namePartialArrive;
     QTime routeDuration;
     QTime routePartialDuration;
+    QString routePartialName;
+    QString routePartialEndpoint;
     QString routePartialType;
     QString routeType;
     QPixmap currentIcon;
@@ -37,7 +39,11 @@ private:
 
     /* Useful helper functions */
     QString resourceFromType(const QString &category, const QString &type) const;
-    QString routeTypePrefix(const QString &category, const QString &type) const;
+    QString routeSummary(const QString &category,
+                         const QString &type,
+                         const QString &name,
+                         const QString &dest,
+                         const QString &endPoint) const;
     QPixmap addPixmaps(const QPixmap &p1, const QPixmap &p2);
 
     /* Handler member function pointers */

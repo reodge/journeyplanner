@@ -31,7 +31,6 @@ bool RouteTreeView::isTopLevelIndex(const QModelIndex &index) const
 
 void RouteTreeView::handleClicked(const QModelIndex &index)
 {
-    qDebug() << "TreeView: Row" << index.row() << "clicked";
     if (isTopLevelIndex(index))
     {
         if (isExpanded(index))
