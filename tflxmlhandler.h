@@ -77,6 +77,10 @@ private:
     void itdDateTimeEnd(const QString &name);
     void itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts);
     void itdMeansOfTransportEnd(const QString &name);
+    void itdOperatorStart(const QString &name, const QXmlAttributes &atts);
+    void itdOperatorEnd(const QString &name);
+    void itdOperatorNameStart(const QString &name, const QXmlAttributes &atts);
+    void itdOperatorNameEnd(const QString &name);
     void itdFrequencyInfoStart(const QString &name, const QXmlAttributes &atts);
     void itdFrequencyInfoEnd(const QString &name);
     void itdFareStart(const QString &name, const QXmlAttributes &atts);

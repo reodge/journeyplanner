@@ -91,6 +91,12 @@ bool TFLXmlHandler::characters(const QString &ch)
 {
     Q_UNUSED (ch);
 
+    if (startTagHandler == &TFLXmlHandler::itdOperatorNameStart)
+    {
+        routePartialName += ch;
+        qDebug() << "Operator name found: " << ch;
+    }
+
     return true;
 }
 
@@ -380,9 +386,8 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     {
         routeType = atts.value("type");
         qDebug() << "itdMeansOfTranport: name =" << atts.value("name") << "shortname =" << atts.value("shortname") << "/ trainName =" << atts.value("trainName");
-        if (routeType == "6")
-            routePartialName = atts.value("trainName"); /* TODO doesn't exist for train operators? */
-        else
+        /* For trains, we'll look at the operator tag */
+        if (routeType != "6")
             routePartialName = atts.value("shortname");
         routePartialEndpoint = atts.value("destination");
         QString s = resourceFromType(routePartialType, routeType);
@@ -507,11 +512,35 @@ void TFLXmlHandler::itdDateTimeEnd(const QString &name)
 
 void TFLXmlHandler::itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts)
 {
+    if (name == "itdOperator")
+        downOneLevel(TAG_FN_EXPAND(itdOperator));
 }
 
 void TFLXmlHandler::itdMeansOfTransportEnd(const QString &name)
 {
     if (name == "itdMeansOfTransport")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdOperatorStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "name")
+        downOneLevel(TAG_FN_EXPAND(itdOperatorName));
+}
+
+void TFLXmlHandler::itdOperatorEnd(const QString &name)
+{
+    if (name == "itdOperator")
+        upOneLevel();
+}
+
+void TFLXmlHandler::itdOperatorNameStart(const QString &name, const QXmlAttributes &atts)
+{
+}
+
+void TFLXmlHandler::itdOperatorNameEnd(const QString &name)
+{
+    if (name == "name")
         upOneLevel();
 }
 
