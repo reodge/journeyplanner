@@ -191,48 +191,30 @@ QString TFLXmlHandler::resourceFromType(const enum MeansOfTransport::type &type)
 }
 
 /* This is the same logic as resourceFromType, merge the two? */
-QString TFLXmlHandler::routeSummary(const QString &category,
-                                    const QString &type,
+QString TFLXmlHandler::routeSummary(const enum MeansOfTransport::type &type,
                                     const QString &name,
                                     const QString &dest,
                                     const QString &endPoint) const
 {
-    bool ok = false;
-    int num = type.toInt(&ok);
     QString generic = "to " + dest;
 
-    if (!ok)
+    switch (type)
+    {
+    case MeansOfTransport::WALK:
+        return "Walk to " + dest;
+    case MeansOfTransport::TUBE:
+        return "Take the " + name + " Line towards " + endPoint;
+    case MeansOfTransport::BUS:
+        return "Bus to " + dest;
+    case MeansOfTransport::RAIL:
+        if (name == "London Overground")
+            return "Take the Overground towards " + endPoint;
+        else
+            return "Take the " + name + " service towards " + endPoint;
+    case MeansOfTransport::UNKNOWN:
+    default:
         return generic;
-
-    if (category == "IT")
-    {
-        switch (num)
-        {
-        case 100:
-            return "Walk to " + dest;
-        default:
-            return generic;
-        }
     }
-    else if (category == "PT")
-    {
-        switch (num)
-        {
-        case 1:
-            return "Take the " + name + " Line towards " + endPoint;
-        case 3:
-            return "Bus to " + dest;
-        case 6:
-            if (name == "London Overground")
-                return "Take the Overground towards " + endPoint;
-            else
-                return "Take the " + name + " service towards " + endPoint;
-        default:
-            return generic;
-        }
-    }
-
-    return generic;
 }
 
 QPixmap TFLXmlHandler::addPixmaps(const QPixmap &p1, const QPixmap &p2)
@@ -448,7 +430,7 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
         QString summary = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + t.from;
-        summary += "\n" + routeSummary(routePartialType, routeType, t.name, t.to, t.endpoint);
+        summary += "\n" + routeSummary(t.type, t.name, t.to, t.endpoint);
         QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);

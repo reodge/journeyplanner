@@ -66,8 +66,7 @@ private:
 
     /* Useful helper functions */
     QString resourceFromType(const enum MeansOfTransport::type &type) const;
-    QString routeSummary(const QString &category,
-                         const QString &type,
+    QString routeSummary(const enum MeansOfTransport::type &type,
                          const QString &name,
                          const QString &dest,
                          const QString &endPoint) const;
