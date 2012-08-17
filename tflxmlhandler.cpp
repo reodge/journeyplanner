@@ -7,6 +7,48 @@ Q_DECLARE_METATYPE(QXmlAttributes);
 
 #define TAG_FN_EXPAND(FUNC) &TFLXmlHandler::FUNC##Start, &TFLXmlHandler::FUNC##End
 
+enum MeansOfTransport::type MeansOfTransport::decodeType(const QString &category, const QString &type)
+{
+    bool ok = false;
+    int num = type.toInt(&ok);
+
+    if (!ok)
+    {
+        qDebug() << "decodeType: type is not an integer:" << type;
+        return UNKNOWN;
+    }
+
+    if (category == "IT")
+    {
+        switch (num)
+        {
+        case 100:
+            return WALK;
+        default:
+            qDebug() << "decodeType: unknown IT type:" << num;
+            return UNKNOWN;
+        }
+    }
+    else if (category == "PT")
+    {
+        switch (num)
+        {
+        case 1:
+            return TUBE;
+        case 3:
+            return BUS;
+        case 6:
+            return RAIL;
+        default:
+            qDebug() << "decodeType: unknown PT type:" << num;
+            return UNKNOWN;
+        }
+    }
+
+    qDebug() << "decodeType: unknown type category:" << category;
+    return UNKNOWN;
+}
+
 TFLXmlHandler::TFLXmlHandler() :
     QXmlDefaultHandler(),
     model(0),
@@ -93,6 +135,8 @@ bool TFLXmlHandler::characters(const QString &ch)
 
     if (startTagHandler == &TFLXmlHandler::itdOperatorNameStart)
     {
+        MeansOfTransport &t = transportList.last();
+        t.name += ch;
         routePartialName += ch;
         qDebug() << "Operator name found: " << ch;
     }
@@ -126,43 +170,24 @@ bool TFLXmlHandler::fatalError(const QXmlParseException &exception)
     return false;
 }
 
-QString TFLXmlHandler::resourceFromType(const QString &category, const QString &type) const
+QString TFLXmlHandler::resourceFromType(const enum MeansOfTransport::type &type) const
 {
-    bool ok = false;
-    int num = type.toInt(&ok);
-
-    if (!ok)
+    switch (type)
+    {
+    case MeansOfTransport::WALK:
+        return ":/walk";
+    case MeansOfTransport::TUBE:
+        return ":/tube";
+    case MeansOfTransport::BUS:
+        return ":/bus";
+    case MeansOfTransport::RAIL:
+        return ":/rail";
+    case MeansOfTransport::UNKNOWN:
         return "";
-
-    if (category == "IT")
-    {
-        switch (num)
-        {
-        case 100:
-            return ":/walk";
-        default:
-            qDebug() << "resourceFromType unknown IT type:" << num;
-            return "";
-        }
+    default:
+        qDebug() << "resourceFromType: unknown enum value:" << type;
+        return "";
     }
-    else if (category == "PT")
-    {
-        switch (num)
-        {
-        case 1:
-            return ":/tube";
-        case 3:
-            return ":/bus";
-        case 6:
-            return ":/rail";
-        default:
-            qDebug() << "resourceFromType unknown PT type:" << num;
-            return "";
-        }
-    }
-
-    qDebug() << "resourceFromType unknown type category:" << category;
-    return "";
 }
 
 /* This is the same logic as resourceFromType, merge the two? */
@@ -352,6 +377,10 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
 {
     if (name == "itdPartialRoute")
     {
+        transportList.clear();
+        transportList.append(MeansOfTransport());
+        MeansOfTransport &t = transportList.last();
+
         routePartialType = atts.value("type");
         routeType.clear();
         routePartialDepart = 0;
@@ -375,6 +404,13 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
 {
     if (name == "itdPoint")
     {
+        MeansOfTransport &t = transportList.last();
+
+        if (t.from.isEmpty())
+            t.from = atts.value("name");
+        else if (t.to.isEmpty())
+            t.to = atts.value("name");
+
         if (namePartialDepart.isEmpty())
             namePartialDepart = atts.value("name");
         else if (namePartialArrive.isEmpty())
@@ -384,13 +420,18 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     }
     else if (name == "itdMeansOfTransport")
     {
+        MeansOfTransport &t = transportList.last();
+        t.type = MeansOfTransport::decodeType(routePartialType, atts.value("type"));
         routeType = atts.value("type");
-        qDebug() << "itdMeansOfTranport: name =" << atts.value("name") << "shortname =" << atts.value("shortname") << "/ trainName =" << atts.value("trainName");
         /* For trains, we'll look at the operator tag */
         if (routeType != "6")
+        {
+            t.name = atts.value("shortname");
             routePartialName = atts.value("shortname");
+        }
+        t.endpoint = atts.value("destination");
         routePartialEndpoint = atts.value("destination");
-        QString s = resourceFromType(routePartialType, routeType);
+        QString s = resourceFromType(t.type);
         currentIcon = addPixmaps(QPixmap(), QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
         routeIcons = addPixmaps(routeIcons, currentIcon);
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
@@ -403,10 +444,11 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
 {
     if (name == "itdPartialRoute")
     {
+        MeansOfTransport &t = transportList.first();
         QString summary = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
         summary += " (" + routePartialDuration.toString("m") + " mins)";
-        summary += "\n" + namePartialDepart;
-        summary += "\n" + routeSummary(routePartialType, routeType, routePartialName, namePartialArrive, routePartialEndpoint);
+        summary += "\n" + t.from;
+        summary += "\n" + routeSummary(routePartialType, routeType, t.name, t.to, t.endpoint);
         QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);

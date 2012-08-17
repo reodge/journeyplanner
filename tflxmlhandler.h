@@ -7,6 +7,28 @@
 #include <QTime>
 #include <QStack>
 
+class MeansOfTransport
+{
+public:
+    enum type
+    {
+        WALK,
+        BUS,
+        RAIL,
+        TRAIN = RAIL,
+        TUBE,
+        UNKNOWN
+    };
+
+    QString name;
+    QString from;
+    QString to;
+    QString endpoint;
+    enum type type;
+
+    static enum type decodeType(const QString &category, const QString &type);
+};
+
 class TFLXmlHandler;
 
 typedef void (TFLXmlHandler::*StartTagHandlerFn)(const QString &, const QXmlAttributes &);
@@ -37,8 +59,13 @@ private:
     QPixmap currentIcon;
     QPixmap routeIcons;
 
+    /* Need to fix up this data problem with all the elements above.
+       Start this by se tting up my own data elements to use and fit the parsed data into that,
+       rather than following the format given to us. */
+    QList<MeansOfTransport> transportList;
+
     /* Useful helper functions */
-    QString resourceFromType(const QString &category, const QString &type) const;
+    QString resourceFromType(const enum MeansOfTransport::type &type) const;
     QString routeSummary(const QString &category,
                          const QString &type,
                          const QString &name,
