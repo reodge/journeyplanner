@@ -137,7 +137,6 @@ bool TFLXmlHandler::characters(const QString &ch)
     {
         MeansOfTransport &t = transportList.last();
         t.name += ch;
-        routePartialName += ch;
         qDebug() << "Operator name found: " << ch;
     }
 
@@ -366,10 +365,6 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
         routePartialType = atts.value("type");
         routePartialDepart = 0;
         routePartialArrive = 0;
-        namePartialDepart = QString();
-        namePartialArrive = QString();
-        routePartialName = QString();
-        routePartialEndpoint = QString();
         routePartialDuration = QTime::fromString(atts.value("timeMinute"), "m");
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
@@ -392,11 +387,6 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
         else if (t.to.isEmpty())
             t.to = atts.value("name");
 
-        if (namePartialDepart.isEmpty())
-            namePartialDepart = atts.value("name");
-        else if (namePartialArrive.isEmpty())
-            namePartialArrive = atts.value("name");
-
         downOneLevel(TAG_FN_EXPAND(itdPoint));
     }
     else if (name == "itdMeansOfTransport")
@@ -407,10 +397,8 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
         if (t.type != MeansOfTransport::RAIL)
         {
             t.name = atts.value("shortname");
-            routePartialName = atts.value("shortname");
         }
         t.endpoint = atts.value("destination");
-        routePartialEndpoint = atts.value("destination");
         QString s = resourceFromType(t.type);
         currentIcon = addPixmaps(QPixmap(), QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
         routeIcons = addPixmaps(routeIcons, currentIcon);
