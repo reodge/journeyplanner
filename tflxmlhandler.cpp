@@ -190,26 +190,23 @@ QString TFLXmlHandler::resourceFromType(const enum MeansOfTransport::type &type)
 }
 
 /* This is the same logic as resourceFromType, merge the two? */
-QString TFLXmlHandler::routeSummary(const enum MeansOfTransport::type &type,
-                                    const QString &name,
-                                    const QString &dest,
-                                    const QString &endPoint) const
+QString TFLXmlHandler::routeSummary(const MeansOfTransport &t) const
 {
-    QString generic = "to " + dest;
+    QString generic = "to " + t.to;
 
-    switch (type)
+    switch (t.type)
     {
     case MeansOfTransport::WALK:
-        return "Walk to " + dest;
+        return "Walk to " + t.to;
     case MeansOfTransport::TUBE:
-        return "Take the " + name + " Line towards " + endPoint;
+        return "Take the " + t.name + " Line towards " + t.endpoint;
     case MeansOfTransport::BUS:
-        return "Bus to " + dest;
+        return "Bus to " + t.to;
     case MeansOfTransport::RAIL:
-        if (name == "London Overground")
-            return "Take the Overground towards " + endPoint;
+        if (t.name == "London Overground")
+            return "Take the Overground towards " + t.endpoint;
         else
-            return "Take the " + name + " service towards " + endPoint;
+            return "Take the " + t.name + " service towards " + t.endpoint;
     case MeansOfTransport::UNKNOWN:
     default:
         return generic;
@@ -408,7 +405,7 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
         QString summary = routePartialDepart.toString("h:mm") + " => " + routePartialArrive.toString("h:mm");
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + t.from;
-        summary += "\n" + routeSummary(t.type, t.name, t.to, t.endpoint);
+        summary += "\n" + routeSummary(t);
         QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);

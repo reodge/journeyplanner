@@ -61,10 +61,7 @@ private:
 
     /* Useful helper functions */
     QString resourceFromType(const enum MeansOfTransport::type &type) const;
-    QString routeSummary(const enum MeansOfTransport::type &type,
-                         const QString &name,
-                         const QString &dest,
-                         const QString &endPoint) const;
+    QString routeSummary(const MeansOfTransport &t) const;
     QPixmap addPixmaps(const QPixmap &p1, const QPixmap &p2);
 
     /* Handler member function pointers */
