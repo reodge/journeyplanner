@@ -55,7 +55,6 @@ private:
     QString routePartialName;
     QString routePartialEndpoint;
     QString routePartialType;
-    QString routeType;
     QPixmap currentIcon;
     QPixmap routeIcons;
 

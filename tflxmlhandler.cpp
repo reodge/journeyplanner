@@ -364,7 +364,6 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
         MeansOfTransport &t = transportList.last();
 
         routePartialType = atts.value("type");
-        routeType.clear();
         routePartialDepart = 0;
         routePartialArrive = 0;
         namePartialDepart = QString();
@@ -404,9 +403,8 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     {
         MeansOfTransport &t = transportList.last();
         t.type = MeansOfTransport::decodeType(routePartialType, atts.value("type"));
-        routeType = atts.value("type");
         /* For trains, we'll look at the operator tag */
-        if (routeType != "6")
+        if (t.type != MeansOfTransport::RAIL)
         {
             t.name = atts.value("shortname");
             routePartialName = atts.value("shortname");
