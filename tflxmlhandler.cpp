@@ -201,7 +201,7 @@ QString TFLXmlHandler::routeSummary(const MeansOfTransport &t) const
     case MeansOfTransport::TUBE:
         return "Take the " + t.name + " Line towards " + t.endpoint;
     case MeansOfTransport::BUS:
-        return "Bus to " + t.to;
+        return "Take bus " + t.name + " to " + t.to;
     case MeansOfTransport::RAIL:
         if (t.name == "London Overground")
             return "Take the Overground towards " + t.endpoint;
