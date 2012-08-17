@@ -301,8 +301,8 @@ void TFLXmlHandler::itdRouteListStart(const QString &name, const QXmlAttributes 
     {
         qDebug("New route");
         routeDuration = QTime::fromString(atts.value("publicDuration"), "hh:mm");
-        routeDepart = 0;
-        routeArrive = 0;
+        routeDepart = QDateTime();
+        routeArrive = QDateTime();
         routeIcons = QPixmap();
         loc->appendRow(new QStandardItem());
         downOneLevel(TAG_FN_EXPAND(itdRoute));
@@ -329,19 +329,11 @@ void TFLXmlHandler::itdRouteEnd(const QString &name)
     {
         QString summaryString;
 
-        if (routeDepart)
-        {
-            summaryString += routeDepart->toString("'Dep: 'h:mm' '");
-            delete routeDepart;
-            routeDepart = 0;
-        }
+        if (routeDepart.isValid())
+            summaryString += routeDepart.toString("'Dep: 'h:mm' '");
 
-        if (routeArrive)
-        {
-            summaryString += routeArrive->toString("'Arr: 'h:mm' '");
-            delete routeArrive;
-            routeArrive = 0;
-        }
+        if (routeArrive.isValid())
+            summaryString += routeArrive.toString("'Arr: 'h:mm' '");
 
         summaryString += routeDuration.toString("'Dur: 'hh:mm");
 
@@ -363,8 +355,8 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
         MeansOfTransport &t = transportList.last();
 
         routePartialType = atts.value("type");
-        routePartialDepart = 0;
-        routePartialArrive = 0;
+        routePartialDepart = QDateTime();
+        routePartialArrive = QDateTime();
         routePartialDuration = QTime::fromString(atts.value("timeMinute"), "m");
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
@@ -413,17 +405,13 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
     if (name == "itdPartialRoute")
     {
         MeansOfTransport &t = transportList.first();
-        QString summary = routePartialDepart->toString("h:mm") + " => " + routePartialArrive->toString("h:mm");
+        QString summary = routePartialDepart.toString("h:mm") + " => " + routePartialArrive.toString("h:mm");
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + t.from;
         summary += "\n" + routeSummary(t.type, t.name, t.to, t.endpoint);
         QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);
-
-        delete routePartialDepart;
-        delete routePartialArrive;
-        routePartialType.clear();
 
         upOneLevel();
     }
@@ -433,7 +421,7 @@ void TFLXmlHandler::itdPointStart(const QString &name, const QXmlAttributes &att
 {
     if (name == "itdDateTime")
     {
-        currentDateTime = new QDateTime();
+        currentDateTime = QDateTime();
         downOneLevel(TAG_FN_EXPAND(itdDateTime));
     }
 }
@@ -442,19 +430,14 @@ void TFLXmlHandler::itdPointEnd(const QString &name)
 {
     if (name == "itdPoint")
     {
-        if (currentDateTime)
+        if (currentDateTime.isValid())
         {
-            if (!routeDepart)
+            if (!routeDepart.isValid())
                 routeDepart = currentDateTime;
             else
-            {
-                if (routeArrive)
-                    delete routeArrive;
-
                 routeArrive = currentDateTime;
-            }
 
-            currentDateTime = 0;
+            currentDateTime = QDateTime();
         }
         upOneLevel();
     }
@@ -483,7 +466,7 @@ void TFLXmlHandler::itdDateTimeStart(const QString &name, const QXmlAttributes &
             return;
         }
 
-        currentDateTime->setDate(QDate(y, m, d));
+        currentDateTime.setDate(QDate(y, m, d));
     }
     else if (name == "itdTime")
     {
@@ -503,7 +486,7 @@ void TFLXmlHandler::itdDateTimeStart(const QString &name, const QXmlAttributes &
             return;
         }
 
-        currentDateTime->setTime(QTime(h, m, 0));
+        currentDateTime.setTime(QTime(h, m, 0));
     }
 }
 
@@ -511,10 +494,10 @@ void TFLXmlHandler::itdDateTimeEnd(const QString &name)
 {
     if (name == "itdDateTime")
     {
-        if (!routePartialDepart)
-            routePartialDepart = new QDateTime(*currentDateTime);
-        else if (!routePartialArrive)
-            routePartialArrive = new QDateTime(*currentDateTime);
+        if (!routePartialDepart.isValid())
+            routePartialDepart = currentDateTime;
+        else if (!routePartialArrive.isValid())
+            routePartialArrive = currentDateTime;
 
         upOneLevel();
     }

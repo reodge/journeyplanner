@@ -43,11 +43,11 @@ private:
     QString ignoreTag;
 
     /* Data to pass between tag handlers. */
-    QDateTime *currentDateTime;
-    QDateTime *routeDepart;
-    QDateTime *routeArrive;
-    QDateTime *routePartialDepart;
-    QDateTime *routePartialArrive;
+    QDateTime currentDateTime;
+    QDateTime routeDepart;
+    QDateTime routeArrive;
+    QDateTime routePartialDepart;
+    QDateTime routePartialArrive;
     QTime routeDuration;
     QTime routePartialDuration;
     QString routePartialType;
