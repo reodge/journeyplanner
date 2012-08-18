@@ -201,7 +201,7 @@ QString TFLXmlHandler::routeSummary(const MeansOfTransport &t) const
     case MeansOfTransport::TUBE:
         return "Take the " + t.name + " Line towards " + t.endpoint;
     case MeansOfTransport::BUS:
-        return "Take bus " + t.name + " to " + t.to;
+        return "Take bus " + t.name + " towards " + t.endpoint;
     case MeansOfTransport::RAIL:
         if (t.name == "London Overground")
             return "Take the Overground towards " + t.endpoint;
@@ -349,7 +349,6 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
     {
         transportList.clear();
         transportList.append(MeansOfTransport());
-        MeansOfTransport &t = transportList.last();
 
         routePartialType = atts.value("type");
         routePartialDepart = QDateTime();
@@ -406,6 +405,10 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + t.from;
         summary += "\n" + routeSummary(t);
+        for (QList<MeansOfTransport>::const_iterator i = ++transportList.begin(); i != transportList.end(); ++i)
+        {
+            summary += "\nor " + routeSummary(*i);
+        }
         QStandardItem *item = new QStandardItem(summary);
         item->setData(currentIcon, Qt::DecorationRole);
         loc->child(loc->rowCount()-1)->appendRow(item);
@@ -512,6 +515,32 @@ void TFLXmlHandler::itdMeansOfTransportEnd(const QString &name)
         upOneLevel();
 }
 
+void TFLXmlHandler::itdMeansOfTransportListStart(const QString &name, const QXmlAttributes &atts)
+{
+    if (name == "itdMeansOfTransport")
+    {
+        transportList.append(MeansOfTransport());
+        MeansOfTransport &t = transportList.last();
+
+        /* TODO This is duplicated, we need to make a function for this */
+        t.type = MeansOfTransport::decodeType(routePartialType, atts.value("type"));
+        /* For trains, we'll look at the operator tag */
+        if (t.type != MeansOfTransport::RAIL)
+        {
+            t.name = atts.value("shortname");
+        }
+        t.endpoint = atts.value("destination");
+
+        downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
+    }
+}
+
+void TFLXmlHandler::itdMeansOfTransportListEnd(const QString &name)
+{
+    if (name == "itdMeansOfTransportList")
+        upOneLevel();
+}
+
 void TFLXmlHandler::itdOperatorStart(const QString &name, const QXmlAttributes &atts)
 {
     if (name == "name")
@@ -536,6 +565,8 @@ void TFLXmlHandler::itdOperatorNameEnd(const QString &name)
 
 void TFLXmlHandler::itdFrequencyInfoStart(const QString &name, const QXmlAttributes &atts)
 {
+    if (name == "itdMeansOfTransportList")
+        downOneLevel(TAG_FN_EXPAND(itdMeansOfTransportList));
 }
 
 void TFLXmlHandler::itdFrequencyInfoEnd(const QString &name)
