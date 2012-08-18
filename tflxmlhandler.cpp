@@ -3,7 +3,6 @@
 #include <QBrush>
 #include <QDebug>
 
-Q_DECLARE_METATYPE(QXmlAttributes);
 
 #define TAG_FN_EXPAND(FUNC) &TFLXmlHandler::FUNC##Start, &TFLXmlHandler::FUNC##End
 
