@@ -21,8 +21,6 @@ public:
     };
 
     QString name;
-    QString from;
-    QString to;
     QString endpoint;
     enum type type;
 
@@ -51,6 +49,8 @@ private:
     QTime routeDuration;
     QTime routePartialDuration;
     QString routePartialType;
+    QString routePartialFrom;
+    QString routePartialTo;
     QPixmap currentIcon;
     QPixmap routeIcons;
 

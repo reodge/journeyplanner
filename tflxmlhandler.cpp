@@ -3,7 +3,6 @@
 #include <QBrush>
 #include <QDebug>
 
-
 #define TAG_FN_EXPAND(FUNC) &TFLXmlHandler::FUNC##Start, &TFLXmlHandler::FUNC##End
 
 enum MeansOfTransport::type MeansOfTransport::decodeType(const QString &category, const QString &type)
@@ -136,7 +135,6 @@ bool TFLXmlHandler::characters(const QString &ch)
     {
         MeansOfTransport &t = transportList.last();
         t.name += ch;
-        qDebug() << "Operator name found: " << ch;
     }
 
     return true;
@@ -191,12 +189,12 @@ QString TFLXmlHandler::resourceFromType(const enum MeansOfTransport::type &type)
 /* This is the same logic as resourceFromType, merge the two? */
 QString TFLXmlHandler::routeSummary(const MeansOfTransport &t) const
 {
-    QString generic = "to " + t.to;
+    QString generic = "to " + t.endpoint;
 
     switch (t.type)
     {
     case MeansOfTransport::WALK:
-        return "Walk to " + t.to;
+        return "Walk to " + t.endpoint;
     case MeansOfTransport::TUBE:
         return "Take the " + t.name + " Line towards " + t.endpoint;
     case MeansOfTransport::BUS:
@@ -352,6 +350,8 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
         routePartialType = atts.value("type");
         routePartialDepart = QDateTime();
         routePartialArrive = QDateTime();
+        routePartialFrom = QString();
+        routePartialTo = QString();
         routePartialDuration = QTime::fromString(atts.value("timeMinute"), "m");
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
@@ -367,25 +367,30 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
 {
     if (name == "itdPoint")
     {
-        MeansOfTransport &t = transportList.last();
-
-        if (t.from.isEmpty())
-            t.from = atts.value("name");
-        else if (t.to.isEmpty())
-            t.to = atts.value("name");
+        if (routePartialFrom.isEmpty())
+            routePartialFrom = atts.value("name");
+        else if (routePartialTo.isEmpty())
+            routePartialTo = atts.value("name");
 
         downOneLevel(TAG_FN_EXPAND(itdPoint));
     }
     else if (name == "itdMeansOfTransport")
     {
         MeansOfTransport &t = transportList.last();
+
         t.type = MeansOfTransport::decodeType(routePartialType, atts.value("type"));
+
         /* For trains, we'll look at the operator tag */
         if (t.type != MeansOfTransport::RAIL)
         {
             t.name = atts.value("shortname");
         }
-        t.endpoint = atts.value("destination");
+
+        if (t.type == MeansOfTransport::WALK)
+            t.endpoint = routePartialTo;
+        else
+            t.endpoint = atts.value("destination");
+
         QString s = resourceFromType(t.type);
         currentIcon = addPixmaps(QPixmap(), QPixmap(s).scaledToHeight(32, Qt::SmoothTransformation));
         routeIcons = addPixmaps(routeIcons, currentIcon);
@@ -399,11 +404,10 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
 {
     if (name == "itdPartialRoute")
     {
-        MeansOfTransport &t = transportList.first();
         QString summary = routePartialDepart.toString("h:mm") + " => " + routePartialArrive.toString("h:mm");
         summary += " (" + routePartialDuration.toString("m") + " mins)";
-        summary += "\n" + t.from;
-        summary += "\n" + routeSummary(t);
+        summary += "\n" + routePartialFrom;
+        summary += "\n" + routeSummary(transportList.first());
         for (QList<MeansOfTransport>::const_iterator i = ++transportList.begin(); i != transportList.end(); ++i)
         {
             summary += "\nor " + routeSummary(*i);
@@ -528,6 +532,7 @@ void TFLXmlHandler::itdMeansOfTransportListStart(const QString &name, const QXml
         {
             t.name = atts.value("shortname");
         }
+
         t.endpoint = atts.value("destination");
 
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransport));
@@ -565,7 +570,12 @@ void TFLXmlHandler::itdOperatorNameEnd(const QString &name)
 void TFLXmlHandler::itdFrequencyInfoStart(const QString &name, const QXmlAttributes &atts)
 {
     if (name == "itdMeansOfTransportList")
+    {
+        /* This will duplicate the info in the previous itdMeansOfTransport we've already found,
+         * so clear the current list in this case */
+        transportList.clear();
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransportList));
+    }
 }
 
 void TFLXmlHandler::itdFrequencyInfoEnd(const QString &name)
