@@ -106,6 +106,8 @@ void MainWindow::setModel(RouteModel *model)
     mapper.addMapping(ui->lineFrom, RouteModel::LAYOUT_FROM_NAME, "text");
     mapper.addMapping(ui->comboTo, RouteModel::LAYOUT_TO_TYPE, "currentIndex");
     mapper.addMapping(ui->lineTo, RouteModel::LAYOUT_TO_NAME, "text");
+    mapper.addMapping(ui->sldDepArr, RouteModel::LAYOUT_DEPARR, "value");
+    mapper.addMapping(ui->dateTime, RouteModel::LAYOUT_DATETIME, "dateTime");
     mapper.toFirst();
 
     /* Ensure initial data is set up in the model */

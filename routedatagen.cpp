@@ -75,17 +75,6 @@ void RouteDataGen::getData()
 {
     QString url("http://journeyplanner.tfl.gov.uk/user/XML_TRIP_REQUEST2?language=en");
 
-    /* Useful stuff to add later */
-    //QString url("&itdTripDateTimeDepArr=");
-    //url.append("&itdDateDay=");
-    //url.append(this->toString("d"));
-    //url.append("&itdDateYearMonth=");
-    //url.append(this->toString("yyyyMM"));
-    //url.append("&itdTimeHour=");
-    //url.append(this->toString("h"));
-    //url.append("&itdTimeMinute=");
-    //url.append(this->toString("m"));
-
     url.append("&type_origin=");
     url.append(typeIndexToString(model->item(0)->child(RouteModel::LAYOUT_FROM_TYPE)->text().toInt()));
     url.append("&type_destination=");
@@ -94,6 +83,24 @@ void RouteDataGen::getData()
     url.append(model->item(0)->child(RouteModel::LAYOUT_FROM_NAME)->text());
     url.append("&name_destination=");
     url.append(model->item(0)->child(RouteModel::LAYOUT_TO_NAME)->text());
+    url.append("&itdTripDateTimeDepArr=");
+
+    switch (model->item(0)->child(RouteModel::LAYOUT_DEPARR)->text().toInt())
+    {
+    case 0:
+        url.append("dep");
+        break;
+    case 1:
+        url.append("arr");
+        break;
+    default:
+        break;
+    }
+
+    QDateTime dt = QDateTime::fromString(model->item(0)->child(RouteModel::LAYOUT_DATETIME)->text(), Qt::ISODate);
+    qDebug() << "Date/time =" << dt;
+
+    url.append(dt.toString("'&itdDate='yyMMdd'&itdTime='hhmm'h'"));
 
     qDebug() << "Opening URL: " << url << endl;
 
