@@ -40,7 +40,8 @@ private:
     RouteViewer rv;
     QDataWidgetMapper mapper;
     RouteModel *model;
-    int posRefCount;
+    int comboFromIndex;
+    int comboToIndex;
 
     QString comboIndexToUrl(QComboBox *c);
     QString sliderValueToUrl(QSlider *s);

@@ -19,8 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     rv(this),
     mapper(this),
-	model(0),
-    posRefCount(2) /* It will be decremented twice on initialisation of UI */
+    model(0),
+    comboFromIndex(0),
+    comboToIndex(0)
 {
     /* Initialise UI elements */
     ui->setupUi(this);
@@ -147,18 +148,19 @@ void MainWindow::indexActivatedFrom(const int index)
 
 void MainWindow::comboIndexChanged(const int index)
 {
-    if (index == 4)
-    {
-        posRefCount++;
-        if ((posRefCount == 1) && model)
-            model->findPositionHint(true);
-    }
-    else
-    {
-        posRefCount--;
-        if ((posRefCount == 0) && model)
-            model->findPositionHint(false);
-    }
+    QObject *sender = QObject::sender();
+
+    if (sender == ui->comboFrom)
+        comboFromIndex = index;
+    else if (sender == ui->comboTo)
+        comboToIndex = index;
+
+    bool bFind = false;
+    if ((comboFromIndex == 4) || (comboToIndex == 4))
+        bFind = true;
+
+    if (model)
+        model->findPositionHint(bFind);
 
     /* This should work with AutoSubmit, but doesn't for ComboBox, so we do it here */
     mapper.submit();
