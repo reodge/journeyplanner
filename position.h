@@ -12,21 +12,19 @@ class Position : public QObject
     Q_OBJECT
 public:
     explicit Position(QObject *parent = 0);
-    ~Position();
 
     void updatePosition();
     void stopUpdates();
-    void waitForPosition();
+    QGeoPositionInfo getLastPosition();
 
 signals:
-    void positionObtained();
+    void positionObtained(QGeoPositionInfo info);
 
 private slots:
-    void positionUpdated(const QGeoPositionInfo& info);
+    void positionUpdated(const QGeoPositionInfo &info);
 
 private:
     QGeoPositionInfoSource *source;
-    const QGeoPositionInfo *info;
 };
 
 #endif // POSITION_H

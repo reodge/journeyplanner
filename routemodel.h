@@ -43,9 +43,15 @@ public slots:
      */
     void findPositionHint(bool state);
 
+private slots:
+    void positionObtained(QGeoPositionInfo info);
+
 private:
     RouteDataGen data;
     Position pos;
+
+    /* Finds out if we will need the position data to generate this route */
+    bool usesPosition();
 };
 
 #endif // ROUTEMODEL_H

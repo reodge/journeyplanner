@@ -35,8 +35,12 @@ enum MeansOfTransport::type MeansOfTransport::decodeType(const QString &category
             return TUBE;
         case 3:
             return BUS;
+        case 4:
+            return TRAM;
         case 6:
             return RAIL;
+        case 99:
+            return TRANSFER;
         default:
             qDebug() << "decodeType: unknown PT type:" << num;
             return UNKNOWN;
@@ -171,11 +175,14 @@ QString TFLXmlHandler::resourceFromType(const enum MeansOfTransport::type &type)
     switch (type)
     {
     case MeansOfTransport::WALK:
+    case MeansOfTransport::TRANSFER:
         return ":/walk";
     case MeansOfTransport::TUBE:
         return ":/tube";
     case MeansOfTransport::BUS:
         return ":/bus";
+    case MeansOfTransport::TRAM:
+        return ":/tram";
     case MeansOfTransport::RAIL:
         return ":/rail";
     case MeansOfTransport::UNKNOWN:
@@ -187,6 +194,7 @@ QString TFLXmlHandler::resourceFromType(const enum MeansOfTransport::type &type)
 }
 
 /* This is the same logic as resourceFromType, merge the two? */
+/* TODO This doesn't allow multiple lines of summaries if it extends longer than a line, what's going on? */
 QString TFLXmlHandler::routeSummary(const MeansOfTransport &t) const
 {
     QString generic = "to " + t.endpoint;
@@ -195,10 +203,14 @@ QString TFLXmlHandler::routeSummary(const MeansOfTransport &t) const
     {
     case MeansOfTransport::WALK:
         return "Walk to " + t.endpoint;
+    case MeansOfTransport::TRANSFER:
+        return "Walk to " + t.endpoint + " Stop: " + t.platformTo;
     case MeansOfTransport::TUBE:
         return "Take the " + t.name + " Line towards " + t.endpoint;
+    case MeansOfTransport::TRAM:
+        return "Take the " + t.name + " towards " + t.endpoint;
     case MeansOfTransport::BUS:
-        return "Take bus " + t.name + " towards " + t.endpoint;
+        return "Take bus " + t.name + " (Stop: " + t.platformFrom + ") towards " + t.endpoint;
     case MeansOfTransport::RAIL:
         if (t.name == "London Overground")
             return "Take the Overground towards " + t.endpoint;
@@ -353,6 +365,7 @@ void TFLXmlHandler::itdPartialRouteListStart(const QString &name, const QXmlAttr
         routePartialFrom = QString();
         routePartialTo = QString();
         routePartialDuration = QTime::fromString(atts.value("timeMinute"), "m");
+        skipNextMeansOfTransport = false;
         downOneLevel(TAG_FN_EXPAND(itdPartialRoute));
     }
 }
@@ -367,15 +380,22 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
 {
     if (name == "itdPoint")
     {
-        if (routePartialFrom.isEmpty())
+        if (routePartialFrom.isNull())
             routePartialFrom = atts.value("name");
-        else if (routePartialTo.isEmpty())
+        else if (routePartialTo.isNull())
             routePartialTo = atts.value("name");
+
+        MeansOfTransport &t = transportList.last();
+        if (t.platformFrom.isNull())
+            t.platformFrom = atts.value("platform");
+        else if (t.platformTo.isNull())
+            t.platformTo = atts.value("platform");
 
         downOneLevel(TAG_FN_EXPAND(itdPoint));
     }
     else if (name == "itdMeansOfTransport")
     {
+        qDebug() << "Found a normal means of transport";
         MeansOfTransport &t = transportList.last();
 
         t.type = MeansOfTransport::decodeType(routePartialType, atts.value("type"));
@@ -386,7 +406,8 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
             t.name = atts.value("shortname");
         }
 
-        if (t.type == MeansOfTransport::WALK)
+        if ((t.type == MeansOfTransport::WALK) ||
+             (t.type == MeansOfTransport::TRANSFER))
             t.endpoint = routePartialTo;
         else
             t.endpoint = atts.value("destination");
@@ -408,6 +429,7 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + routePartialFrom;
         summary += "\n" + routeSummary(transportList.first());
+        qDebug() << "About to print summary, should have" << transportList.length() << "entries";
         for (QList<MeansOfTransport>::const_iterator i = ++transportList.begin(); i != transportList.end(); ++i)
         {
             summary += "\nor " + routeSummary(*i);
@@ -522,6 +544,12 @@ void TFLXmlHandler::itdMeansOfTransportListStart(const QString &name, const QXml
 {
     if (name == "itdMeansOfTransport")
     {
+        if (skipNextMeansOfTransport)
+        {
+            skipNextMeansOfTransport = false;
+            return;
+        }
+
         transportList.append(MeansOfTransport());
         MeansOfTransport &t = transportList.last();
 
@@ -573,7 +601,8 @@ void TFLXmlHandler::itdFrequencyInfoStart(const QString &name, const QXmlAttribu
     {
         /* This will duplicate the info in the previous itdMeansOfTransport we've already found,
          * so clear the current list in this case */
-        transportList.clear();
+        skipNextMeansOfTransport = true;
+        //transportList.clear();
         downOneLevel(TAG_FN_EXPAND(itdMeansOfTransportList));
     }
 }

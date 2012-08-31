@@ -8,7 +8,6 @@ QTM_USE_NAMESPACE
 Position::Position(QObject *parent) :
     QObject(parent)
 {
-    info = NULL;
     source = QGeoPositionInfoSource::createDefaultSource(this);
     if (source)
     {
@@ -17,19 +16,14 @@ Position::Position(QObject *parent) :
     }
 }
 
-Position::~Position()
-{
-}
-
 void Position::positionUpdated(const QGeoPositionInfo &info)
 {
     qDebug() << "Position: " << info;
     if (info.hasAttribute(QGeoPositionInfo::HorizontalAccuracy) &&
         info.attribute(QGeoPositionInfo::HorizontalAccuracy) < 100.0)
     {
-        this->info = &info;
         source->stopUpdates();
-        emit positionObtained();
+        emit positionObtained(info);
     }
 }
 
@@ -45,6 +39,7 @@ void Position::stopUpdates()
         source->stopUpdates();
 }
 
-void Position::waitForPosition()
+QGeoPositionInfo Position::getLastPosition()
 {
+    return source->lastKnownPosition();
 }

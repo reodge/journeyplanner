@@ -13,15 +13,19 @@ public:
     enum type
     {
         WALK,
+        TRANSFER,
         BUS,
         RAIL,
         TRAIN = RAIL,
+        TRAM,
         TUBE,
         UNKNOWN
     };
 
     QString name;
     QString endpoint;
+    QString platformFrom;
+    QString platformTo;
     enum type type;
 
     static enum type decodeType(const QString &category, const QString &type);
@@ -53,6 +57,7 @@ private:
     QString routePartialTo;
     QPixmap currentIcon;
     QPixmap routeIcons;
+    bool skipNextMeansOfTransport;
 
     /* Need to fix up this data problem with all the elements above.
        Start this by se tting up my own data elements to use and fit the parsed data into that,

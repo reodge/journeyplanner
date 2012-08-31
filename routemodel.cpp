@@ -26,11 +26,31 @@ void RouteModel::findPositionHint(bool state)
         pos.stopUpdates();
 }
 
+void RouteModel::positionObtained(QGeoPositionInfo info)
+{
+    disconnect(this, SLOT(positionObtained(QGeoPositionInfo)));
+    data.setPosition(info);
+    data.getData();
+}
+
+bool RouteModel::usesPosition()
+{
+    return (this->item(0)->child(LAYOUT_FROM_TYPE)->text().toInt() == 4) ||
+            (this->item(0)->child(LAYOUT_TO_TYPE)->text().toInt() == 4);
+}
+
 void RouteModel::getRoutes()
 {
     data.setModel(this);
     data.setRootItem(this->item(1));
-    data.getData();
+
+    if (usesPosition())
+    {
+        connect(&pos, SIGNAL(positionObtained(QGeoPositionInfo)), this, SLOT(positionObtained(QGeoPositionInfo)));
+        pos.updatePosition();
+    }
+    else
+        data.getData();
 }
 
 void RouteModel::cancelRoutes()

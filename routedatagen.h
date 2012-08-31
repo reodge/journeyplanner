@@ -7,7 +7,10 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QXmlSimpleReader>
+#include <QtLocation/QGeoPositionInfo>
 #include "tflxmlhandler.h"
+
+QTM_USE_NAMESPACE
 
 class RouteDataGen : public QObject
 {
@@ -17,6 +20,7 @@ public:
     void getData();
     void setModel(QStandardItemModel *model);
     void setRootItem(QStandardItem *item);
+    void setPosition(const QGeoPositionInfo &info);
     void cancelData();
 
 signals:
@@ -31,10 +35,12 @@ private:
     QXmlSimpleReader xmlReader;
     QStandardItemModel *model;
     QStandardItem *root;
+    QGeoPositionInfo info;
     QNetworkReply *currentNetworkRequest;
 
     QString getBaseTFLURL();
     QString typeIndexToString(const int i) const;
+    QString coordToString(const QGeoCoordinate &coord);
 };
 
 #endif // TFLURLGEN_H
