@@ -121,7 +121,6 @@ void RouteDataGen::getData()
     }
 
     QDateTime dt = QDateTime::fromString(model->item(0)->child(RouteModel::LAYOUT_DATETIME)->text(), Qt::ISODate);
-    qDebug() << "Date/time =" << dt;
 
     url.append(dt.toString("'&itdDate='yyMMdd'&itdTime='hhmm'h'"));
 

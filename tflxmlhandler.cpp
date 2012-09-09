@@ -260,6 +260,8 @@ void TFLXmlHandler::downOneLevel(StartTagHandlerFn s, EndTagHandlerFn e)
 
 void TFLXmlHandler::itdRequestStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     /* Because we don't have a handler for top level, so ignore this */
     if (name == "itdRequest")
         downOneLevel(TAG_FN_EXPAND(itdRequest));
@@ -277,6 +279,8 @@ void TFLXmlHandler::itdRequestEnd(const QString &name)
 
 void TFLXmlHandler::itdTripRequestStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdItinerary")
         downOneLevel(TAG_FN_EXPAND(itdItinerary));
     else
@@ -291,6 +295,8 @@ void TFLXmlHandler::itdTripRequestEnd(const QString &name)
 
 void TFLXmlHandler::itdItineraryStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdRouteList")
         downOneLevel(TAG_FN_EXPAND(itdRouteList));
 }
@@ -323,6 +329,8 @@ void TFLXmlHandler::itdRouteListEnd(const QString &name)
 
 void TFLXmlHandler::itdRouteStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdPartialRouteList")
         downOneLevel(TAG_FN_EXPAND(itdPartialRouteList));
     else if (name == "itdFare")
@@ -395,7 +403,6 @@ void TFLXmlHandler::itdPartialRouteStart(const QString &name, const QXmlAttribut
     }
     else if (name == "itdMeansOfTransport")
     {
-        qDebug() << "Found a normal means of transport";
         MeansOfTransport &t = transportList.last();
 
         t.type = MeansOfTransport::decodeType(routePartialType, atts.value("type"));
@@ -429,7 +436,6 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
         summary += " (" + routePartialDuration.toString("m") + " mins)";
         summary += "\n" + routePartialFrom;
         summary += "\n" + routeSummary(transportList.first());
-        qDebug() << "About to print summary, should have" << transportList.length() << "entries";
         for (QList<MeansOfTransport>::const_iterator i = ++transportList.begin(); i != transportList.end(); ++i)
         {
             summary += "\nor " + routeSummary(*i);
@@ -444,6 +450,8 @@ void TFLXmlHandler::itdPartialRouteEnd(const QString &name)
 
 void TFLXmlHandler::itdPointStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdDateTime")
     {
         currentDateTime = QDateTime();
@@ -530,6 +538,8 @@ void TFLXmlHandler::itdDateTimeEnd(const QString &name)
 
 void TFLXmlHandler::itdMeansOfTransportStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdOperator")
         downOneLevel(TAG_FN_EXPAND(itdOperator));
 }
@@ -542,6 +552,8 @@ void TFLXmlHandler::itdMeansOfTransportEnd(const QString &name)
 
 void TFLXmlHandler::itdMeansOfTransportListStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdMeansOfTransport")
     {
         if (skipNextMeansOfTransport)
@@ -575,6 +587,8 @@ void TFLXmlHandler::itdMeansOfTransportListEnd(const QString &name)
 
 void TFLXmlHandler::itdOperatorStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "name")
         downOneLevel(TAG_FN_EXPAND(itdOperatorName));
 }
@@ -587,6 +601,8 @@ void TFLXmlHandler::itdOperatorEnd(const QString &name)
 
 void TFLXmlHandler::itdOperatorNameStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(name);
+    Q_UNUSED(atts);
 }
 
 void TFLXmlHandler::itdOperatorNameEnd(const QString &name)
@@ -597,6 +613,8 @@ void TFLXmlHandler::itdOperatorNameEnd(const QString &name)
 
 void TFLXmlHandler::itdFrequencyInfoStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdMeansOfTransportList")
     {
         /* This will duplicate the info in the previous itdMeansOfTransport we've already found,
@@ -615,6 +633,8 @@ void TFLXmlHandler::itdFrequencyInfoEnd(const QString &name)
 
 void TFLXmlHandler::itdFareStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdTariffzones")
         downOneLevel(TAG_FN_EXPAND(itdTariffzones));
 }
@@ -627,6 +647,8 @@ void TFLXmlHandler::itdFareEnd(const QString &name)
 
 void TFLXmlHandler::itdTariffzonesStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "itdZones")
         downOneLevel(TAG_FN_EXPAND(itdZones));
 }
@@ -639,6 +661,8 @@ void TFLXmlHandler::itdTariffzonesEnd(const QString &name)
 
 void TFLXmlHandler::itdZonesStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(atts);
+
     if (name == "zoneElem")
         downOneLevel(TAG_FN_EXPAND(zoneElem));
 }
@@ -651,6 +675,8 @@ void TFLXmlHandler::itdZonesEnd(const QString &name)
 
 void TFLXmlHandler::zoneElemStart(const QString &name, const QXmlAttributes &atts)
 {
+    Q_UNUSED(name);
+    Q_UNUSED(atts);
 }
 
 void TFLXmlHandler::zoneElemEnd(const QString &name)
