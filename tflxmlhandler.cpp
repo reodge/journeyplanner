@@ -81,8 +81,8 @@ bool TFLXmlHandler::startDocument()
     }
 
     root->removeRow(root->rowCount() - 1);
-    QStandardItem *item = new QStandardItem("Search earlier ...");
-    root->appendRow(item);
+    //QStandardItem *item = new QStandardItem("Search earlier ...");
+    //root->appendRow(item);
     loc = root;
     ignoreTag.clear();
 
@@ -103,8 +103,8 @@ bool TFLXmlHandler::endDocument()
 {
     qDebug("Parsing ended");
 
-    QStandardItem *item = new QStandardItem("Search later ...");
-    root->appendRow(item);
+    //QStandardItem *item = new QStandardItem("Search later ...");
+    //root->appendRow(item);
 
 #if 0
     setDecorations();
